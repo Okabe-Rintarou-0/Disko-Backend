@@ -16,7 +16,7 @@ var (
 
 func genDao() {
 	g := gen.NewGenerator(gen.Config{
-		OutPath:       "./dal/query",
+		OutPath:       "./dao/query",
 		Mode:          gen.WithDefaultQuery | gen.WithQueryInterface,
 		FieldNullable: true,
 	})
