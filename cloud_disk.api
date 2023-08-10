@@ -1,0 +1,36 @@
+type LoginRequest {
+	Email    string `form:"email"`
+	Password string `form:"password"`
+}
+
+type Response {
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
+type LoginResponse {
+	Message  string `json:"message"`
+	Ok       bool   `json:"succeed"`
+	Token    string `json:"token"`
+	ExpireAt int64  `json:"expireAt"`
+}
+
+type UserDTO {
+	ID    uint   `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+service cloud-disk-api {
+	@handler LoginHandler
+	post /api/login (LoginRequest) returns (LoginResponse)
+}
+
+@server(
+	jwt: Auth
+)
+
+service cloud-disk-api {
+	@handler MeHandler
+	get /api/me returns (UserDTO)
+}

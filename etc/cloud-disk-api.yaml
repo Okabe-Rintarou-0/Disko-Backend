@@ -1,0 +1,6 @@
+Name: cloud-disk-api
+Host: 0.0.0.0
+Port: 8888
+Auth:
+  AccessSecret: REPLACE_WITH_YOUR_SECRET
+  AccessExpire: 3600
