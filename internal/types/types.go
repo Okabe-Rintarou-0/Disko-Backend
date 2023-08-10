@@ -6,6 +6,12 @@ type LoginRequest struct {
 	Password string `form:"password"`
 }
 
+type RegisterRequest struct {
+	Name     string `form:"name"`
+	Email    string `form:"email"`
+	Password string `form:"password"`
+}
+
 type Response struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
@@ -13,9 +19,14 @@ type Response struct {
 
 type LoginResponse struct {
 	Message  string `json:"message"`
-	Ok       bool   `json:"succeed"`
+	Ok       bool   `json:"ok"`
 	Token    string `json:"token"`
 	ExpireAt int64  `json:"expireAt"`
+}
+
+type RegisterResponse struct {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
 }
 
 type UserDTO struct {

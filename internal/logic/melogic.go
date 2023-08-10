@@ -4,6 +4,7 @@ import (
 	"cloud_disk/dao/model"
 	"context"
 	"errors"
+	"github.com/spf13/cast"
 	"gorm.io/gorm"
 
 	"cloud_disk/internal/svc"
@@ -27,10 +28,9 @@ func NewMeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MeLogic {
 }
 
 func (l *MeLogic) Me() (resp *types.UserDTO, err error) {
-	// todo: add your logic here and delete this line
 	var user *model.User
-	// todo change id
-	user, err = l.svcCtx.UserDAO.FindById(2)
+	var id = cast.ToUint(l.ctx.Value("id"))
+	user, err = l.svcCtx.UserDAO.FindById(id)
 	if user != nil {
 		return &types.UserDTO{
 			ID:    user.ID,

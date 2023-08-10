@@ -8,6 +8,7 @@ import (
 type IUserDAO interface {
 	FindById(id uint) (*model.User, error)
 	FindByEmail(email string) (*model.User, error)
+	Save(users ...*model.User) error
 }
 
 func NewUserDAO() IUserDAO {
@@ -24,4 +25,9 @@ func (d *UserDAO) FindById(id uint) (*model.User, error) {
 func (d *UserDAO) FindByEmail(email string) (*model.User, error) {
 	u := query.Use(db).User
 	return u.WithContext(ctx).Where(u.Email.Eq(email)).Take()
+}
+
+func (d *UserDAO) Save(users ...*model.User) error {
+	u := query.Use(db).User
+	return u.WithContext(ctx).Save(users...)
 }

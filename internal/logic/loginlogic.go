@@ -4,7 +4,6 @@ import (
 	"cloud_disk/dao/model"
 	"context"
 	"errors"
-	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"gorm.io/gorm"
 	"time"
@@ -37,15 +36,22 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	l.Logger.Infof("Receive email: %s and password: %s", req.Email, req.Password)
 
 	user, err = l.svcCtx.UserDAO.FindByEmail(req.Email)
-	if user == nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			fmt.Println("Yes")
-			err = nil
-		}
+	if user == nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		return &types.LoginResponse{
-			Message: "邮箱或密码错误！",
+			Message: "用户不存在！",
 			Ok:      false,
-		}, err
+		}, nil
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	if req.Password != user.Password {
+		return &types.LoginResponse{
+			Message: "密码错误！",
+			Ok:      false,
+		}, nil
 	}
 
 	now := time.Now().Unix()

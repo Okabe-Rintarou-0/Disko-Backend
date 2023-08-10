@@ -3,6 +3,12 @@ type LoginRequest {
 	Password string `form:"password"`
 }
 
+type RegisterRequest {
+	Name     string `form:"name"`
+	Email    string `form:"email"`
+	Password string `form:"password"`
+}
+
 type Response {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
@@ -10,9 +16,14 @@ type Response {
 
 type LoginResponse {
 	Message  string `json:"message"`
-	Ok       bool   `json:"succeed"`
+	Ok       bool   `json:"ok"`
 	Token    string `json:"token"`
 	ExpireAt int64  `json:"expireAt"`
+}
+
+type RegisterResponse {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
 }
 
 type UserDTO {
@@ -24,6 +35,9 @@ type UserDTO {
 service cloud-disk-api {
 	@handler LoginHandler
 	post /api/login (LoginRequest) returns (LoginResponse)
+
+	@handler RegisterHandler
+	post /api/register (RegisterRequest) returns (RegisterResponse)
 }
 
 @server(
