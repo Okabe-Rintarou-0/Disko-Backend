@@ -1,12 +1,14 @@
 package dao
 
 import (
-	"cloud_disk/dao/model"
+	"cloud_disk/model"
 	"context"
 	"fmt"
+	"gopkg.in/yaml.v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"
 	"gorm.io/gorm"
+	"os"
 )
 
 var (
@@ -14,9 +16,18 @@ var (
 	ctx = context.TODO()
 )
 
+type mysqlConfig struct {
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	Database string `yaml:"database"`
+	Timeout  string `yaml:"timeout"`
+}
+
 func genDao() {
 	g := gen.NewGenerator(gen.Config{
-		OutPath:       "./dao/query",
+		OutPath:       "./repository/query",
 		Mode:          gen.WithDefaultQuery | gen.WithQueryInterface,
 		FieldNullable: true,
 	})
@@ -33,16 +44,19 @@ func genDao() {
 }
 
 func init() {
-	username := "root"     // 账号
-	password := "123"      // 密码
-	host := "127.0.0.1"    // 数据库地址，可以是Ip或者域名
-	port := 3306           // 数据库端口
-	Dbname := "cloud_disk" // 数据库名
-	timeout := "10s"       // 连接超时，10秒
+	file, err := os.ReadFile("./etc/mysql.yaml")
+	if err != nil {
+		panic(err)
+	}
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%s", username, password, host, port, Dbname, timeout)
+	cfg := mysqlConfig{}
+	if err = yaml.Unmarshal(file, &cfg); err != nil {
+		panic(err)
+	}
+	fmt.Printf("Read mysql config: %+v\n", cfg)
 
-	var err error
+	dsnPattern := "%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%s"
+	dsn := fmt.Sprintf(dsnPattern, cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Database, cfg.Timeout)
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {

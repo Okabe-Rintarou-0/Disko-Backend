@@ -1,10 +1,12 @@
 package logic
 
 import (
-	"cloud_disk/dao/model"
+	"cloud_disk/model"
 	"context"
 	"errors"
 	"github.com/dlclark/regexp2"
+	"github.com/spf13/cast"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"regexp"
 
@@ -47,8 +49,19 @@ func (l *RegisterLogic) verifyPasswordFormat(password string) bool {
 	return succeed
 }
 
+func (l *RegisterLogic) encryptPassword(password string) (string, error) {
+	encrypted, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return cast.ToString(encrypted), nil
+}
+
 func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.RegisterResponse, err error) {
-	var user *model.User
+	var (
+		user         *model.User
+		encryptedPwd string
+	)
 
 	if !l.verifyEmailFormat(req.Email) {
 		return &types.RegisterResponse{
@@ -76,9 +89,14 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 		}, nil
 	}
 
+	encryptedPwd, err = l.encryptPassword(req.Password)
+	if err != nil {
+		return nil, err
+	}
+
 	err = l.svcCtx.UserDAO.Save(&model.User{
 		Name:     req.Name,
-		Password: req.Password,
+		Password: encryptedPwd,
 		Email:    req.Email,
 	})
 

@@ -26,13 +26,21 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/api/me",
-				Handler: MeHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckBlackList},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/api/me",
+					Handler: MeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/api/logout",
+					Handler: LogoutHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)
 }

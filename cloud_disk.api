@@ -26,6 +26,11 @@ type RegisterResponse {
 	Ok      bool   `json:"ok"`
 }
 
+type LogoutResponse {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
 type UserDTO {
 	ID    uint   `json:"id"`
 	Name  string `json:"name"`
@@ -42,9 +47,13 @@ service cloud-disk-api {
 
 @server(
 	jwt: Auth
+	middleware: CheckBlackList
 )
 
 service cloud-disk-api {
 	@handler MeHandler
 	get /api/me returns (UserDTO)
+
+	@handler LogoutHandler
+	post /api/logout returns (LogoutResponse)
 }

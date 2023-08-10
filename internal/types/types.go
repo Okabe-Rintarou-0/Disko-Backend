@@ -29,6 +29,11 @@ type RegisterResponse struct {
 	Ok      bool   `json:"ok"`
 }
 
+type LogoutResponse struct {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
 type UserDTO struct {
 	ID    uint   `json:"id"`
 	Name  string `json:"name"`

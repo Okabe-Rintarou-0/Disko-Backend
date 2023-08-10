@@ -1,7 +1,7 @@
 package logic
 
 import (
-	"cloud_disk/dao/model"
+	"cloud_disk/model"
 	"context"
 	"errors"
 	"github.com/spf13/cast"

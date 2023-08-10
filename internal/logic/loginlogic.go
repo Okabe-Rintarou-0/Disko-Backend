@@ -1,10 +1,11 @@
 package logic
 
 import (
-	"cloud_disk/dao/model"
+	"cloud_disk/model"
 	"context"
 	"errors"
 	"github.com/golang-jwt/jwt/v4"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"time"
 
@@ -43,11 +44,9 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 		}, nil
 	}
 
+	// return err if not equal
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
 	if err != nil {
-		return nil, err
-	}
-
-	if req.Password != user.Password {
 		return &types.LoginResponse{
 			Message: "密码错误！",
 			Ok:      false,
@@ -75,6 +74,8 @@ func (l *LoginLogic) getJwtToken(secret string, nowDate, accessExpire int64, id 
 	claims := make(jwt.MapClaims)
 	claims["exp"] = nowDate + accessExpire
 	claims["iat"] = nowDate
+
+	claims["expireAt"] = nowDate + accessExpire
 	claims["id"] = id
 	token := jwt.New(jwt.SigningMethodHS256)
 	token.Claims = claims
