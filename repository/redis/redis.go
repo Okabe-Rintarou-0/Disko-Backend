@@ -2,25 +2,25 @@ package redis
 
 import (
 	"context"
-	"disko/utils"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 )
 
 var (
-	ctx  = context.Background()
-	rds  *redis.Redis
-	conf redis.RedisConf
+	ctx = context.Background()
+	rds *redis.Redis
+	cfg redis.RedisConf
 )
 
 func init() {
-	utils.ReadConfig("./etc/redis.yaml", &conf)
-	fmt.Printf("Read redis config: %+v\n", conf)
-	rds = redis.MustNewRedis(conf)
+	conf.MustLoad("./etc/redis.yaml", &cfg)
+	fmt.Printf("Read redis config: %+v\n", cfg)
+	rds = redis.MustNewRedis(cfg)
 }
 
 func Host() string {
-	return conf.Host
+	return cfg.Host
 }
 
 func Set(key, value string) error {

@@ -6,7 +6,6 @@ package query
 
 import (
 	"context"
-	"disko/model"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -16,6 +15,8 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	"disko/model"
 )
 
 func newUser(db *gorm.DB, opts ...gen.DOOption) user {
@@ -33,6 +34,16 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 	_user.Name = field.NewString(tableName, "name")
 	_user.Password = field.NewString(tableName, "password")
 	_user.Email = field.NewString(tableName, "email")
+	_user.Files = userHasManyFiles{
+		db: db.Session(&gorm.Session{}),
+
+		RelationField: field.NewRelation("Files", "model.File"),
+		Parent: struct {
+			field.RelationField
+		}{
+			RelationField: field.NewRelation("Files.Parent", "model.File"),
+		},
+	}
 
 	_user.fillFieldMap()
 
@@ -50,6 +61,7 @@ type user struct {
 	Name      field.String
 	Password  field.String
 	Email     field.String
+	Files     userHasManyFiles
 
 	fieldMap map[string]field.Expr
 }
@@ -97,7 +109,7 @@ func (u *user) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (u *user) fillFieldMap() {
-	u.fieldMap = make(map[string]field.Expr, 7)
+	u.fieldMap = make(map[string]field.Expr, 8)
 	u.fieldMap["id"] = u.ID
 	u.fieldMap["created_at"] = u.CreatedAt
 	u.fieldMap["updated_at"] = u.UpdatedAt
@@ -105,6 +117,7 @@ func (u *user) fillFieldMap() {
 	u.fieldMap["name"] = u.Name
 	u.fieldMap["password"] = u.Password
 	u.fieldMap["email"] = u.Email
+
 }
 
 func (u user) clone(db *gorm.DB) user {
@@ -115,6 +128,81 @@ func (u user) clone(db *gorm.DB) user {
 func (u user) replaceDB(db *gorm.DB) user {
 	u.userDo.ReplaceDB(db)
 	return u
+}
+
+type userHasManyFiles struct {
+	db *gorm.DB
+
+	field.RelationField
+
+	Parent struct {
+		field.RelationField
+	}
+}
+
+func (a userHasManyFiles) Where(conds ...field.Expr) *userHasManyFiles {
+	if len(conds) == 0 {
+		return &a
+	}
+
+	exprs := make([]clause.Expression, 0, len(conds))
+	for _, cond := range conds {
+		exprs = append(exprs, cond.BeCond().(clause.Expression))
+	}
+	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
+	return &a
+}
+
+func (a userHasManyFiles) WithContext(ctx context.Context) *userHasManyFiles {
+	a.db = a.db.WithContext(ctx)
+	return &a
+}
+
+func (a userHasManyFiles) Session(session *gorm.Session) *userHasManyFiles {
+	a.db = a.db.Session(session)
+	return &a
+}
+
+func (a userHasManyFiles) Model(m *model.User) *userHasManyFilesTx {
+	return &userHasManyFilesTx{a.db.Model(m).Association(a.Name())}
+}
+
+type userHasManyFilesTx struct{ tx *gorm.Association }
+
+func (a userHasManyFilesTx) Find() (result []*model.File, err error) {
+	return result, a.tx.Find(&result)
+}
+
+func (a userHasManyFilesTx) Append(values ...*model.File) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Append(targetValues...)
+}
+
+func (a userHasManyFilesTx) Replace(values ...*model.File) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Replace(targetValues...)
+}
+
+func (a userHasManyFilesTx) Delete(values ...*model.File) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Delete(targetValues...)
+}
+
+func (a userHasManyFilesTx) Clear() error {
+	return a.tx.Clear()
+}
+
+func (a userHasManyFilesTx) Count() int64 {
+	return a.tx.Count()
 }
 
 type userDo struct{ gen.DO }

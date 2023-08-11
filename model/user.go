@@ -8,4 +8,5 @@ type User struct {
 	// encrypted
 	Password string `json:"password" gorm:"type:char(60);not null"`
 	Email    string `json:"email" gorm:"type:varchar(255);not null"`
+	Files    []File `json:"files" gorm:"foreignKey:owner"`
 }

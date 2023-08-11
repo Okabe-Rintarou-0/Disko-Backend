@@ -22,4 +22,8 @@ go.work
 
 .idea
 
+data
+
+*.rdb
+
 /etc/email.yaml

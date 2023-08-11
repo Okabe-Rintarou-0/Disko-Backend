@@ -1,14 +1,14 @@
 package email
 
 import (
-	"disko/utils"
 	"fmt"
 	"github.com/jordan-wright/email"
+	"github.com/zeromicro/go-zero/core/conf"
 	"net/smtp"
 )
 
 func init() {
-	utils.ReadConfig("./etc/email.yaml", &cfg)
+	conf.MustLoad("./etc/email.yaml", &cfg)
 	fmt.Printf("Read email config: %+v\n", cfg)
 }
 
@@ -17,11 +17,11 @@ var (
 )
 
 type Config struct {
-	From     string `yaml:"from"`
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
-	Host     string `yaml:"host"`
-	Addr     string `yaml:"addr"`
+	From     string
+	Username string
+	Password string
+	Host     string
+	Addr     string
 }
 
 func SendEmail(to, subject, content string) error {

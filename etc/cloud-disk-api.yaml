@@ -4,3 +4,8 @@ Port: 8888
 Auth:
   AccessSecret: REPLACE_WITH_YOUR_SECRET
   AccessExpire: 3600
+
+FileStorage:
+  MaxFileSize: 4 #4G
+  LocalStorage:
+    Dir: ./data

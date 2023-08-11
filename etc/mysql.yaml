@@ -1,6 +1,6 @@
-username: root
-password: 123
-host: 127.0.0.1
-port: 3306
-database: cloud_disk
-timeout: 10s
+Username: root
+Password: "123"
+Host: 127.0.0.1
+Port: 3306
+Database: cloud_disk
+Timeout: 10s

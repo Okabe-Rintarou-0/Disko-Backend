@@ -48,6 +48,15 @@ type RegisterVcodeResponse struct {
 	Ok      bool   `json:"ok"`
 }
 
+type FileUploadResponse struct {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
+type FileUploadRequest struct {
+	Parent string `form:"parent,optional"`
+}
+
 type UserDTO struct {
 	ID    uint   `json:"id"`
 	Name  string `json:"name"`

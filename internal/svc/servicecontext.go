@@ -11,6 +11,7 @@ type ServiceContext struct {
 	Config         config.Config
 	CheckBlackList rest.Middleware
 	UserDAO        dao.IUserDAO
+	FileDAO        dao.IFileDAO
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -18,5 +19,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:         c,
 		CheckBlackList: middleware.NewCheckBlackListMiddleware().Handle,
 		UserDAO:        dao.NewUserDAO(),
+		FileDAO:        dao.NewFileDAO(),
 	}
 }

@@ -1,17 +1,12 @@
-package dao
+package main
 
 import (
-	"context"
 	"disko/model"
 	"fmt"
 	"github.com/zeromicro/go-zero/core/conf"
 	"gorm.io/driver/mysql"
+	"gorm.io/gen"
 	"gorm.io/gorm"
-)
-
-var (
-	db  *gorm.DB
-	ctx = context.TODO()
 )
 
 type mysqlConfig struct {
@@ -23,10 +18,11 @@ type mysqlConfig struct {
 	Timeout  string
 }
 
-func init() {
+func main() {
 	var (
 		cfg mysqlConfig
 		err error
+		db  *gorm.DB
 	)
 	conf.MustLoad("./etc/mysql.yaml", &cfg)
 	fmt.Printf("Read mysql config: %+v\n", cfg)
@@ -37,16 +33,19 @@ func init() {
 	if err != nil {
 		panic("连接数据库失败, error=" + err.Error())
 	}
+	g := gen.NewGenerator(gen.Config{
+		OutPath:       "./repository/query",
+		Mode:          gen.WithDefaultQuery | gen.WithQueryInterface,
+		FieldNullable: true,
+	})
 
-	err = db.AutoMigrate(&model.User{}, &model.File{})
-	if err != nil {
-		panic(err)
-	}
+	// Use the above `*gorm.DB` instance to initialize the generator,
+	// which is required to generate structs from db when using `GenerateModel/GenerateModelAs`
+	g.UseDB(db)
 
-	// 延时关闭数据库连接
-	//defer func() {
-	//	if sql, err := db.DB(); err == nil {
-	//		_ = sql.Close()
-	//	}
-	//}()
+	// Generate default DAO interface for those specified structs
+	g.ApplyBasic(model.User{}, model.File{})
+
+	// Execute the generator
+	g.Execute()
 }

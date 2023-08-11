@@ -44,6 +44,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/api/logout",
 					Handler: LogoutHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/api/files",
+					Handler: FileUploadHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

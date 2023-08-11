@@ -1,4 +1,4 @@
-host: 127.0.0.1:6379
-type: node
-tls: false
-pass:
+Host: 127.0.0.1:6379
+Type: node
+Tls: false
+Pass:
