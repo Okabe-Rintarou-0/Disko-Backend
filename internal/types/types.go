@@ -10,6 +10,7 @@ type RegisterRequest struct {
 	Name     string `form:"name"`
 	Email    string `form:"email"`
 	Password string `form:"password"`
+	Vcode    string `form:"vcode"`
 }
 
 type Response struct {
@@ -29,7 +30,20 @@ type RegisterResponse struct {
 	Ok      bool   `json:"ok"`
 }
 
+type LogoutRequest struct {
+	Token string `header:"Authorization"`
+}
+
 type LogoutResponse struct {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
+type RegisterVcodeRequest struct {
+	Email string `form:"email"`
+}
+
+type RegisterVcodeResponse struct {
 	Message string `json:"message"`
 	Ok      bool   `json:"ok"`
 }

@@ -2,8 +2,10 @@ package logic
 
 import (
 	"cloud_disk/model"
+	"cloud_disk/repository/redis"
 	"context"
 	"errors"
+	"fmt"
 	"github.com/dlclark/regexp2"
 	"github.com/spf13/cast"
 	"golang.org/x/crypto/bcrypt"
@@ -60,6 +62,7 @@ func (l *RegisterLogic) encryptPassword(password string) (string, error) {
 func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.RegisterResponse, err error) {
 	var (
 		user         *model.User
+		vcode        string
 		encryptedPwd string
 	)
 
@@ -73,6 +76,19 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 	if !l.verifyPasswordFormat(req.Password) {
 		return &types.RegisterResponse{
 			Message: "密码格式错误（包含至少一位数字，字母，且长度8-16）！",
+			Ok:      false,
+		}, nil
+	}
+
+	key := fmt.Sprintf("vcode:%s", req.Email)
+	vcode, err = redis.Get(key)
+	if err != nil {
+		return nil, err
+	}
+
+	if req.Vcode != vcode {
+		return &types.RegisterResponse{
+			Message: "验证码错误！",
 			Ok:      false,
 		}, nil
 	}
@@ -100,6 +116,12 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 		Email:    req.Email,
 	})
 
+	if err != nil {
+		return nil, err
+	}
+
+	// invalidate vcode
+	_, err = redis.Del(key)
 	if err != nil {
 		return nil, err
 	}

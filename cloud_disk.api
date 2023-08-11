@@ -7,6 +7,7 @@ type RegisterRequest {
 	Name     string `form:"name"`
 	Email    string `form:"email"`
 	Password string `form:"password"`
+	Vcode    string `form:"vcode"`
 }
 
 type Response {
@@ -26,7 +27,20 @@ type RegisterResponse {
 	Ok      bool   `json:"ok"`
 }
 
+type LogoutRequest {
+	Token string `header:"Authorization"`
+}
+
 type LogoutResponse {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
+type RegisterVcodeRequest {
+	Email string `form:"email"`
+}
+
+type RegisterVcodeResponse {
 	Message string `json:"message"`
 	Ok      bool   `json:"ok"`
 }
@@ -43,6 +57,9 @@ service cloud-disk-api {
 
 	@handler RegisterHandler
 	post /api/register (RegisterRequest) returns (RegisterResponse)
+
+	@handler RegisterVcodeHandler
+	get /api/register/vcode (RegisterVcodeRequest) returns (RegisterVcodeResponse)
 }
 
 @server(
@@ -55,5 +72,5 @@ service cloud-disk-api {
 	get /api/me returns (UserDTO)
 
 	@handler LogoutHandler
-	post /api/logout returns (LogoutResponse)
+	put /api/logout (LogoutRequest) returns (LogoutResponse)
 }

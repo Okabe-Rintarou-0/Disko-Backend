@@ -2,13 +2,12 @@ package dao
 
 import (
 	"cloud_disk/model"
+	"cloud_disk/utils"
 	"context"
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"
 	"gorm.io/gorm"
-	"os"
 )
 
 var (
@@ -44,17 +43,12 @@ func genDao() {
 }
 
 func init() {
-	file, err := os.ReadFile("./etc/mysql.yaml")
-	if err != nil {
-		panic(err)
-	}
-
-	cfg := mysqlConfig{}
-	if err = yaml.Unmarshal(file, &cfg); err != nil {
-		panic(err)
-	}
+	var (
+		cfg mysqlConfig
+		err error
+	)
+	utils.ReadConfig("./etc/mysql.yaml", &cfg)
 	fmt.Printf("Read mysql config: %+v\n", cfg)
-
 	dsnPattern := "%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%s"
 	dsn := fmt.Sprintf(dsnPattern, cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Database, cfg.Timeout)
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})

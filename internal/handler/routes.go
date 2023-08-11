@@ -22,6 +22,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/api/register",
 				Handler: RegisterHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/api/register/vcode",
+				Handler: RegisterVcodeHandler(serverCtx),
+			},
 		},
 	)
 

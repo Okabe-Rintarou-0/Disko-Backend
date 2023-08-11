@@ -9,16 +9,16 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func LogoutHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func RegisterVcodeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.LogoutRequest
+		var req types.RegisterVcodeRequest
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := logic.NewLogoutLogic(r.Context(), svcCtx)
-		resp, err := l.Logout(&req)
+		l := logic.NewRegisterVcodeLogic(r.Context(), svcCtx)
+		resp, err := l.RegisterVcode(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

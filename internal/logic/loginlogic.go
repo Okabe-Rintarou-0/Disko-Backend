@@ -74,7 +74,6 @@ func (l *LoginLogic) getJwtToken(secret string, nowDate, accessExpire int64, id 
 	claims := make(jwt.MapClaims)
 	claims["exp"] = nowDate + accessExpire
 	claims["iat"] = nowDate
-
 	claims["expireAt"] = nowDate + accessExpire
 	claims["id"] = id
 	token := jwt.New(jwt.SigningMethodHS256)

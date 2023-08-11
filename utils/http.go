@@ -1,12 +1,10 @@
 package utils
 
 import (
-	"net/http"
 	"strings"
 )
 
-func GetToken(r *http.Request) (string, bool) {
-	token := r.Header.Get("Authorization")
+func GetToken(token string) (string, bool) {
 	if strings.HasPrefix(token, "Bearer ") && len(token) > 7 {
 		return token[7:], true
 	}
