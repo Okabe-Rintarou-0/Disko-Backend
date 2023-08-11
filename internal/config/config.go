@@ -4,8 +4,10 @@ import "github.com/zeromicro/go-zero/rest"
 
 type FileStorageConf struct {
 	// in GB
-	MaxFileSize  float64
-	LocalStorage *LocalStorage
+	MaxFileSize float64
+	// in KB
+	MaxDownloadRate float64
+	LocalStorage    *LocalStorage
 }
 
 type LocalStorage struct {

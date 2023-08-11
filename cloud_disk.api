@@ -54,6 +54,10 @@ type FileUploadRequest {
 	Parent string `form:"parent,optional"`
 }
 
+type FileDownloadRequest {
+	UUID string `path:"uuid"`
+}
+
 type UserDTO {
 	ID    uint   `json:"id"`
 	Name  string `json:"name"`
@@ -85,4 +89,7 @@ service cloud-disk-api {
 
 	@handler FileUploadHandler
 	post /api/files (FileUploadRequest) returns (FileUploadResponse)
+
+	@handler FileDownloadHandler
+	get /api/files/:uuid (FileDownloadRequest)
 }

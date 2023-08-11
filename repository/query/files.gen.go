@@ -38,6 +38,7 @@ func newFile(db *gorm.DB, opts ...gen.DOOption) file {
 	_file.Path = field.NewString(tableName, "path")
 	_file.Owner = field.NewUint(tableName, "owner")
 	_file.IsDir = field.NewBool(tableName, "is_dir")
+	_file.Private = field.NewBool(tableName, "private")
 	_file.ParentID = field.NewUint(tableName, "parent_id")
 	_file.Parent = fileBelongsToParent{
 		db: db.Session(&gorm.Session{}),
@@ -70,6 +71,7 @@ type file struct {
 	Path      field.String
 	Owner     field.Uint
 	IsDir     field.Bool
+	Private   field.Bool
 	ParentID  field.Uint
 	Parent    fileBelongsToParent
 
@@ -99,6 +101,7 @@ func (f *file) updateTableName(table string) *file {
 	f.Path = field.NewString(table, "path")
 	f.Owner = field.NewUint(table, "owner")
 	f.IsDir = field.NewBool(table, "is_dir")
+	f.Private = field.NewBool(table, "private")
 	f.ParentID = field.NewUint(table, "parent_id")
 
 	f.fillFieldMap()
@@ -124,7 +127,7 @@ func (f *file) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (f *file) fillFieldMap() {
-	f.fieldMap = make(map[string]field.Expr, 13)
+	f.fieldMap = make(map[string]field.Expr, 14)
 	f.fieldMap["id"] = f.ID
 	f.fieldMap["created_at"] = f.CreatedAt
 	f.fieldMap["updated_at"] = f.UpdatedAt
@@ -136,6 +139,7 @@ func (f *file) fillFieldMap() {
 	f.fieldMap["path"] = f.Path
 	f.fieldMap["owner"] = f.Owner
 	f.fieldMap["is_dir"] = f.IsDir
+	f.fieldMap["private"] = f.Private
 	f.fieldMap["parent_id"] = f.ParentID
 
 }

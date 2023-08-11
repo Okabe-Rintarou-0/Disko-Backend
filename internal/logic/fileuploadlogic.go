@@ -107,13 +107,15 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 	// it must be a file
 	// since directory can only be created instead of uploaded
 	err = l.svcCtx.FileDAO.Save(&model.File{
-		Name:     filename,
-		Ext:      ext,
-		Size:     header.Size,
-		UUID:     uid,
-		Path:     uid + ext,
-		Owner:    cast.ToUint(l.ctx.Value("id")),
-		IsDir:    false,
+		Name:  filename,
+		Ext:   ext,
+		Size:  header.Size,
+		UUID:  uid,
+		Path:  uid + ext,
+		Owner: cast.ToUint(l.ctx.Value("id")),
+		IsDir: false,
+		// private file by default
+		Private:  true,
 		ParentID: parentID,
 		Parent:   parent,
 	})

@@ -7,5 +7,6 @@ Auth:
 
 FileStorage:
   MaxFileSize: 4 #4G
+  MaxDownloadRate: 1 #1 MB
   LocalStorage:
     Dir: ./data

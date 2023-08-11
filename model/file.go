@@ -13,6 +13,7 @@ type File struct {
 	Path     string `json:"path" gorm:"type:varchar(255);not null"`
 	Owner    uint   `json:"owner" gorm:"not null"`
 	IsDir    bool   `yaml:"isDir" gorm:"not null"`
+	Private  bool   `yaml:"private" gorm:"not null"`
 	ParentID *uint
 	Parent   *File `gorm:"foreignkey:ParentID"`
 }

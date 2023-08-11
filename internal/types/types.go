@@ -57,6 +57,10 @@ type FileUploadRequest struct {
 	Parent string `form:"parent,optional"`
 }
 
+type FileDownloadRequest struct {
+	UUID string `path:"uuid"`
+}
+
 type UserDTO struct {
 	ID    uint   `json:"id"`
 	Name  string `json:"name"`

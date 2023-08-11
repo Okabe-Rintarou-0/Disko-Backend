@@ -49,6 +49,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/api/files",
 					Handler: FileUploadHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/api/files/:uuid",
+					Handler: FileDownloadHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
