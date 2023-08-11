@@ -1,76 +1,76 @@
 type LoginRequest {
-	Email    string `form:"email"`
-	Password string `form:"password"`
+    Email string `form:"email"`
+    Password string `form:"password"`
 }
 
 type RegisterRequest {
-	Name     string `form:"name"`
-	Email    string `form:"email"`
-	Password string `form:"password"`
-	Vcode    string `form:"vcode"`
+    Name string `form:"name"`
+    Email string `form:"email"`
+    Password string `form:"password"`
+    Vcode string `form:"vcode"`
 }
 
 type Response {
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+    Message string `json:"message"`
+    Data interface{} `json:"data"`
 }
 
 type LoginResponse {
-	Message  string `json:"message"`
-	Ok       bool   `json:"ok"`
-	Token    string `json:"token"`
-	ExpireAt int64  `json:"expireAt"`
+    Message string `json:"message"`
+    Ok bool `json:"ok"`
+    Token string `json:"token"`
+    ExpireAt int64 `json:"expireAt"`
 }
 
 type RegisterResponse {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+    Message string `json:"message"`
+    Ok bool `json:"ok"`
 }
 
 type LogoutRequest {
-	Token string `header:"Authorization"`
+    Token string `header:"Authorization"`
 }
 
 type LogoutResponse {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+    Message string `json:"message"`
+    Ok bool `json:"ok"`
 }
 
 type RegisterVcodeRequest {
-	Email string `form:"email"`
+    Email string `form:"email"`
 }
 
 type RegisterVcodeResponse {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+    Message string `json:"message"`
+    Ok bool `json:"ok"`
 }
 
 type UserDTO {
-	ID    uint   `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
+    ID uint `json:"id"`
+    Name string `json:"name"`
+    Email string `json:"email"`
 }
 
 service cloud-disk-api {
-	@handler LoginHandler
-	post /api/login (LoginRequest) returns (LoginResponse)
+    @handler LoginHandler
+    post /api/login (LoginRequest) returns (LoginResponse)
 
-	@handler RegisterHandler
-	post /api/register (RegisterRequest) returns (RegisterResponse)
+    @handler RegisterHandler
+    post /api/register (RegisterRequest) returns (RegisterResponse)
 
-	@handler RegisterVcodeHandler
-	get /api/register/vcode (RegisterVcodeRequest) returns (RegisterVcodeResponse)
+    @handler RegisterVcodeHandler
+    get /api/register/vcode (RegisterVcodeRequest) returns (RegisterVcodeResponse)
 }
 
 @server(
-	jwt: Auth
-	middleware: CheckBlackList
+    jwt: Auth
+    middleware: CheckBlackList
 )
 
 service cloud-disk-api {
-	@handler MeHandler
-	get /api/me returns (UserDTO)
+    @handler MeHandler
+    get /api/me returns (UserDTO)
 
-	@handler LogoutHandler
-	put /api/logout (LogoutRequest) returns (LogoutResponse)
+    @handler LogoutHandler
+    put /api/logout (LogoutRequest) returns (LogoutResponse)
 }

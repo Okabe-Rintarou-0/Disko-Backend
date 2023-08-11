@@ -1,14 +1,14 @@
 package logic
 
 import (
-	"cloud_disk/model"
 	"context"
+	"disko/model"
 	"errors"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
 
-	"cloud_disk/internal/svc"
-	"cloud_disk/internal/types"
+	"disko/internal/svc"
+	"disko/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

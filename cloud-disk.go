@@ -1,9 +1,9 @@
 package main
 
 import (
-	"cloud_disk/internal/config"
-	"cloud_disk/internal/handler"
-	"cloud_disk/internal/svc"
+	"disko/internal/config"
+	"disko/internal/handler"
+	"disko/internal/svc"
 	"flag"
 	"fmt"
 

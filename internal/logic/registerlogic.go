@@ -1,9 +1,9 @@
 package logic
 
 import (
-	"cloud_disk/model"
-	"cloud_disk/repository/redis"
 	"context"
+	"disko/model"
+	"disko/repository/redis"
 	"errors"
 	"fmt"
 	"github.com/dlclark/regexp2"
@@ -12,8 +12,8 @@ import (
 	"gorm.io/gorm"
 	"regexp"
 
-	"cloud_disk/internal/svc"
-	"cloud_disk/internal/types"
+	"disko/internal/svc"
+	"disko/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

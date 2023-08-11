@@ -1,9 +1,9 @@
 package dao
 
 import (
-	"cloud_disk/model"
-	"cloud_disk/repository/query"
-	"cloud_disk/repository/redis"
+	"disko/model"
+	"disko/repository/query"
+	"disko/repository/redis"
 	"fmt"
 )
 

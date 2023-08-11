@@ -4,7 +4,7 @@ package handler
 import (
 	"net/http"
 
-	"cloud_disk/internal/svc"
+	"disko/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

@@ -1,9 +1,9 @@
 package svc
 
 import (
-	"cloud_disk/dao"
-	"cloud_disk/internal/config"
-	"cloud_disk/internal/middleware"
+	"disko/dao"
+	"disko/internal/config"
+	"disko/internal/middleware"
 	"github.com/zeromicro/go-zero/rest"
 )
 

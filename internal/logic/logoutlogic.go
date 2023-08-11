@@ -1,10 +1,10 @@
 package logic
 
 import (
-	"cloud_disk/internal/svc"
-	"cloud_disk/internal/types"
-	"cloud_disk/utils"
 	"context"
+	"disko/internal/svc"
+	"disko/internal/types"
+	"disko/utils"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 )

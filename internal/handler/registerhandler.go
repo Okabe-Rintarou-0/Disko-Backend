@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
-	"cloud_disk/internal/logic"
-	"cloud_disk/internal/svc"
-	"cloud_disk/internal/types"
+	"disko/internal/logic"
+	"disko/internal/svc"
+	"disko/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 

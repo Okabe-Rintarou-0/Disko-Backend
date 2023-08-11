@@ -1,17 +1,17 @@
 package logic
 
 import (
-	"cloud_disk/email"
-	"cloud_disk/repository/redis"
 	"context"
+	"disko/email"
+	"disko/repository/redis"
 	"fmt"
 	"github.com/adjust/rmq/v5"
 	"github.com/spf13/cast"
 	"math/rand"
 	"time"
 
-	"cloud_disk/internal/svc"
-	"cloud_disk/internal/types"
+	"disko/internal/svc"
+	"disko/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

@@ -1,7 +1,7 @@
 package email
 
 import (
-	"cloud_disk/utils"
+	"disko/utils"
 	"fmt"
 	"github.com/jordan-wright/email"
 	"net/smtp"

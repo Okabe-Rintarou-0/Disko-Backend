@@ -5,8 +5,8 @@
 package query
 
 import (
-	"cloud_disk/model"
 	"context"
+	"disko/model"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"

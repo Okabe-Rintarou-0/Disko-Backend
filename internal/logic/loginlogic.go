@@ -1,16 +1,16 @@
 package logic
 
 import (
-	"cloud_disk/model"
 	"context"
+	"disko/model"
 	"errors"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"time"
 
-	"cloud_disk/internal/svc"
-	"cloud_disk/internal/types"
+	"disko/internal/svc"
+	"disko/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

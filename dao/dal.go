@@ -1,9 +1,9 @@
 package dao
 
 import (
-	"cloud_disk/model"
-	"cloud_disk/utils"
 	"context"
+	"disko/model"
+	"disko/utils"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"

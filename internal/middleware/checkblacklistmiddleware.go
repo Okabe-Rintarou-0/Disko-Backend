@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"cloud_disk/repository/redis"
+	"disko/repository/redis"
 	"fmt"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"
