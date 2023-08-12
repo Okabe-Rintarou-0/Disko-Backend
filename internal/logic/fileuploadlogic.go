@@ -43,7 +43,6 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 		uid      string
 		filePath string
 		parent   *model.File
-		parentID *uint
 	)
 	// convert to bytes
 	// 1 GB = (1 << 30) B
@@ -69,8 +68,8 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 		}, nil
 	}
 
-	if len(req.Parent) > 0 {
-		parent, err = l.svcCtx.FileDAO.FindByUUID(req.Parent)
+	if req.Parent != nil {
+		parent, err = l.svcCtx.FileDAO.FindById(*req.Parent)
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, err
 		}
@@ -78,10 +77,6 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 			Message: "指定的文件目录不存在！",
 			Ok:      false,
 		}, nil
-	}
-
-	if parent != nil {
-		parentID = &parent.ID
 	}
 
 	ext := path.Ext(header.Filename)
@@ -116,7 +111,7 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 		IsDir: false,
 		// private file by default
 		Private:  true,
-		ParentID: parentID,
+		ParentID: req.Parent,
 		Parent:   parent,
 	})
 	if err != nil {

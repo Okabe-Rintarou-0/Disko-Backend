@@ -43,8 +43,8 @@ func (l *FileDownloadLogic) FileDownload(req *types.FileDownloadRequest, w http.
 		return err
 	}
 
-	// found no file, so just return 404
-	if fileMeta == nil {
+	// found no file or file is a directory, so just return 404
+	if fileMeta == nil || fileMeta.IsDir {
 		w.WriteHeader(http.StatusNotFound)
 		return nil
 	}

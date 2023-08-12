@@ -1,3 +1,5 @@
+syntax = "v1"
+
 type LoginRequest {
 	Email    string `form:"email"`
 	Password string `form:"password"`
@@ -51,7 +53,7 @@ type FileUploadResponse {
 }
 
 type FileUploadRequest {
-	Parent string `form:"parent,optional"`
+	Parent *uint `form:"parent,optional"`
 }
 
 type FileDownloadRequest {
@@ -62,6 +64,23 @@ type UserDTO {
 	ID    uint   `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
+}
+
+type FileDTO {
+	Name    string `json:"name"`
+	Ext     string `json:"ext"`
+	Size    int64  `json:"size"`
+	UUID    string `json:"uuid"`
+	Owner   uint   `json:"owner"`
+	IsDir   bool   `json:"isDir"`
+	Private bool   `json:"private"`
+}
+
+type GetMyFileRequest {
+	// parent dir uuid
+	Parent     *uint    `form:"parent,optional"`
+	Keyword    string   `form:"keyword,optional"`
+	Extensions []string `form:"extensions,optional"`
 }
 
 service cloud-disk-api {
@@ -92,4 +111,7 @@ service cloud-disk-api {
 
 	@handler FileDownloadHandler
 	get /api/files/:uuid (FileDownloadRequest)
+
+	@handler GetMyFilesHandler
+	get /api/files/mine (GetMyFileRequest) returns ([]FileDTO)
 }

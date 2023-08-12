@@ -7,6 +7,7 @@ import (
 	"github.com/zeromicro/go-zero/core/conf"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var (
@@ -21,6 +22,7 @@ type mysqlConfig struct {
 	Port     int
 	Database string
 	Timeout  string
+	ShowSql  bool
 }
 
 func init() {
@@ -32,7 +34,15 @@ func init() {
 	fmt.Printf("Read mysql config: %+v\n", cfg)
 	dsnPattern := "%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%s"
 	dsn := fmt.Sprintf(dsnPattern, cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Database, cfg.Timeout)
-	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
+	gormCfg := &gorm.Config{}
+	if cfg.ShowSql {
+		gormCfg = &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Info),
+		}
+	}
+
+	db, err = gorm.Open(mysql.Open(dsn), gormCfg)
 
 	if err != nil {
 		panic("连接数据库失败, error=" + err.Error())

@@ -4,3 +4,4 @@ Host: 127.0.0.1
 Port: 3306
 Database: cloud_disk
 Timeout: 10s
+ShowSql: false

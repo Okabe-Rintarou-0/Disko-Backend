@@ -54,7 +54,7 @@ type FileUploadResponse struct {
 }
 
 type FileUploadRequest struct {
-	Parent string `form:"parent,optional"`
+	Parent *uint `form:"parent,optional"`
 }
 
 type FileDownloadRequest struct {
@@ -65,4 +65,20 @@ type UserDTO struct {
 	ID    uint   `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
+}
+
+type FileDTO struct {
+	Name    string `json:"name"`
+	Ext     string `json:"ext"`
+	Size    int64  `json:"size"`
+	UUID    string `json:"uuid"`
+	Owner   uint   `json:"owner"`
+	IsDir   bool   `json:"isDir"`
+	Private bool   `json:"private"`
+}
+
+type GetMyFileRequest struct {
+	Parent     *uint    `form:"parent,optional"`
+	Keyword    string   `form:"keyword,optional"`
+	Extensions []string `form:"extensions,optional"`
 }
