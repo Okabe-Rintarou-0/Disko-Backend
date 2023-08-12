@@ -68,6 +68,7 @@ type UserDTO struct {
 }
 
 type FileDTO struct {
+	ID      uint   `json:"id"`
 	Name    string `json:"name"`
 	Ext     string `json:"ext"`
 	Size    int64  `json:"size"`
