@@ -3,6 +3,13 @@
 基于 [go-zero](https://github.com/zeromicro/go-zero) 实现 API 代码自动生成，[gorm](https://github.com/go-gorm/gorm)
 实现数据库管理。
 
+## 利用 GORM 管理 mysql
+
+### Soft Delete
+
+> If your model includes a gorm.DeletedAt field (which is included in gorm.Model), it will get soft delete ability
+> automatically!
+
 ## 如何处理 JWT 在用户登出之后销毁的问题
 
 JWT 本质上是将一些信息在服务器编码，在用户登录后将 token 发送给客户端。客户端在后续发送请求时在 `Authorization` header
@@ -25,8 +32,8 @@ JWT 本质上是将一些信息在服务器编码，在用户登录后将 token 
 有关 `application/octet-stream` 格式，可以参考：https://juejin.cn/post/6979224810681270309
 
 > application/octet-stream 是应用程序文件的默认值。意思是未知的应用程序文件
-，浏览器一般不会自动执行或询问执行。浏览器会像对待，设置了HTTP头Content-Disposition 值为 attachment
-的文件一样来对待这类文件，即浏览器会触发下载行为。
+> ，浏览器一般不会自动执行或询问执行。浏览器会像对待，设置了HTTP头Content-Disposition 值为 attachment
+> 的文件一样来对待这类文件，即浏览器会触发下载行为。
 
 ## 限制文件上传/下载的速率
 

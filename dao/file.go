@@ -8,10 +8,12 @@ import (
 
 type IFileDAO interface {
 	FindById(id uint) (*model.File, error)
+	FindByOwnerAndParentAndName(owner uint, parent *uint, name string) (*model.File, error)
 	FindByUUID(uuid string) (*model.File, error)
 	Save(files ...*model.File) error
 	FindByOwner(ownerID uint) ([]*model.File, error)
 	Search(owner *uint, parent *uint, keyword string, extensions []string) ([]*model.File, error)
+	DeleteById(id uint) error
 }
 
 func NewFileDAO() IFileDAO {
@@ -19,6 +21,21 @@ func NewFileDAO() IFileDAO {
 }
 
 type FileDAO struct{}
+
+func (fd *FileDAO) DeleteById(id uint) error {
+	f := query.Use(db).File
+	_, err := f.WithContext(ctx).Where(f.ID.Eq(id)).Delete()
+	return err
+}
+
+func (fd *FileDAO) FindByOwnerAndParentAndName(owner uint, parent *uint, name string) (*model.File, error) {
+	f := query.Use(db).File
+	q := f.WithContext(ctx).Where(f.Owner.Eq(owner), f.Name.Eq(name))
+	if parent != nil {
+		q = q.Where(f.ParentID.Eq(*parent))
+	}
+	return q.Take()
+}
 
 func (fd *FileDAO) Search(owner *uint, parent *uint, keyword string, extensions []string) ([]*model.File, error) {
 	f := query.Use(db).File

@@ -57,6 +57,36 @@ type FileUploadRequest struct {
 	Parent *uint `form:"parent,optional"`
 }
 
+type CreateDirectoryResponse struct {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
+type DeleteFileResponse struct {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
+type DeleteFileRequest struct {
+	ID uint `path:"id"`
+}
+
+type CreateDirectoryRequest struct {
+	Name   string `form:"name,optional"`
+	Parent *uint  `form:"parent,optional"`
+}
+
+type UpdateFileRequest struct {
+	ID      uint   `path:"id"`
+	Name    string `form:"name,optional"`
+	Private *bool  `form:"private,optional"`
+}
+
+type UpdateFileResponse struct {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
 type FileDownloadRequest struct {
 	UUID string `path:"uuid"`
 }

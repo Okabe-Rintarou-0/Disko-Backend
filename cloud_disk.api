@@ -56,6 +56,36 @@ type FileUploadRequest {
 	Parent *uint `form:"parent,optional"`
 }
 
+type CreateDirectoryResponse {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
+type DeleteFileResponse {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
+type DeleteFileRequest {
+	ID uint `path:"id"`
+}
+
+type CreateDirectoryRequest {
+	Name   string `form:"name,optional"`
+	Parent *uint  `form:"parent,optional"`
+}
+
+type UpdateFileRequest {
+	ID      uint   `path:"id"`
+	Name    string `form:"name,optional"`
+	Private *bool  `form:"private,optional"`
+}
+
+type UpdateFileResponse {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
 type FileDownloadRequest {
 	UUID string `path:"uuid"`
 }
@@ -109,6 +139,15 @@ service cloud-disk-api {
 
 	@handler FileUploadHandler
 	post /api/files (FileUploadRequest) returns (FileUploadResponse)
+
+	@handler UpdateFileHandler
+	put /api/files/:id (UpdateFileRequest) returns (UpdateFileResponse)
+
+	@handler DeleteFileHandler
+	delete /api/files/:id (DeleteFileRequest) returns (DeleteFileResponse)
+
+	@handler CreateDirectoryHandler
+	post /api/files/directory (CreateDirectoryRequest) returns (CreateDirectoryResponse)
 
 	@handler FileDownloadHandler
 	get /api/files/:uuid (FileDownloadRequest)

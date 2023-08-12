@@ -42,8 +42,10 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 		tempFile *os.File
 		uid      string
 		filePath string
+		existed  *model.File
 		parent   *model.File
 	)
+	owner := cast.ToUint(l.ctx.Value("id"))
 	// convert to bytes
 	// 1 GB = (1 << 30) B
 	maxFileSize := cast.ToInt64(l.svcCtx.Config.FileStorage.MaxFileSize * bytesPerGB)
@@ -57,10 +59,6 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 	}
 	defer file.Close()
 
-	fmt.Printf("Uploaded File: %+v\n", header.Filename)
-	fmt.Printf("File Size: %+v\n", header.Size)
-	fmt.Printf("MIME Header: %+v\n", header.Header)
-
 	if header.Size > maxFileSize {
 		return &types.FileUploadResponse{
 			Message: fmt.Sprintf("超过文件大小上限：%fGB", l.svcCtx.Config.FileStorage.MaxFileSize),
@@ -73,15 +71,42 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, err
 		}
-		return &types.FileUploadResponse{
-			Message: "指定的文件目录不存在！",
-			Ok:      false,
-		}, nil
+
+		// specified parent does not exist
+		if parent == nil {
+			return &types.FileUploadResponse{
+				Message: "指定的文件夹不存在！",
+				Ok:      false,
+			}, nil
+		}
+
+		// if parent does not belong to me, then I have no authority to create a file under it
+		if parent.Owner != owner {
+			return &types.FileUploadResponse{
+				Message: "非法操作！无权限！",
+				Ok:      false,
+			}, nil
+		}
 	}
 
 	ext := path.Ext(header.Filename)
 	filename := header.Filename[:len(header.Filename)-len(ext)]
 	fmt.Printf("filename = %s, ext = %s\n", filename, ext)
+
+	// only one case is invalid: same name under same parent directory
+	existed, err = l.svcCtx.FileDAO.FindByOwnerAndParentAndName(owner, req.Parent, filename)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+
+	// if ABC is a file(wo extension), while another ABC is a directory, it is ok
+	// this statement means: 'if exists file with same name'
+	if existed != nil && !existed.IsDir {
+		return &types.FileUploadResponse{
+			Message: "已存在同名文件！",
+			Ok:      false,
+		}, nil
+	}
 
 	dir := l.svcCtx.Config.FileStorage.LocalStorage.Dir
 	// save as <uuid><ext>
@@ -107,7 +132,7 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 		Size:  header.Size,
 		UUID:  uid,
 		Path:  uid + ext,
-		Owner: cast.ToUint(l.ctx.Value("id")),
+		Owner: owner,
 		IsDir: false,
 		// private file by default
 		Private:  true,
