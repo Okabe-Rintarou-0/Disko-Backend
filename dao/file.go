@@ -47,6 +47,8 @@ func (fd *FileDAO) Search(owner *uint, parent *uint, keyword string, extensions 
 
 	if parent != nil {
 		q = q.Where(f.ParentID.Eq(*parent))
+	} else {
+		q = q.Where(f.ParentID.IsNull())
 	}
 
 	if len(keyword) > 0 {

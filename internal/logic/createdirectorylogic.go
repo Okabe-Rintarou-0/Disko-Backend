@@ -33,6 +33,14 @@ func (l *CreateDirectoryLogic) CreateDirectory(req *types.CreateDirectoryRequest
 		parent  *model.File
 		existed *model.File
 	)
+
+	if len(req.Name) == 0 {
+		return &types.CreateDirectoryResponse{
+			Message: "文件夹名字不得为空！",
+			Ok:      false,
+		}, nil
+	}
+
 	owner := cast.ToUint(l.ctx.Value("id"))
 
 	// step 1 check whether parent exists
