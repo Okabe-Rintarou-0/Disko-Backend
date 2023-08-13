@@ -67,7 +67,16 @@ type DeleteFileResponse {
 }
 
 type DeleteFileRequest {
-	ID uint `path:"id"`
+	UUID string `path:"uuid"`
+}
+
+type DeleteFilesRequest {
+	UUIDs []string `form:"uuids"`
+}
+
+type DeleteFilesResponse {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
 }
 
 type CreateDirectoryRequest {
@@ -105,6 +114,7 @@ type FileDTO {
 	Owner   uint   `json:"owner"`
 	IsDir   bool   `json:"isDir"`
 	Private bool   `json:"private"`
+	Parent  *uint  `json:"parent"`
 }
 
 type GetMyFileRequest {
@@ -112,6 +122,10 @@ type GetMyFileRequest {
 	Parent     *uint    `form:"parent,optional"`
 	Keyword    string   `form:"keyword,optional"`
 	Extensions []string `form:"extensions,optional"`
+}
+
+type GetOneFileRequest {
+	ID uint `path:"id"`
 }
 
 service cloud-disk-api {
@@ -144,14 +158,27 @@ service cloud-disk-api {
 	put /api/files/:id (UpdateFileRequest) returns (UpdateFileResponse)
 
 	@handler DeleteFileHandler
-	delete /api/files/:id (DeleteFileRequest) returns (DeleteFileResponse)
+	delete /api/files/:uuid (DeleteFileRequest) returns (DeleteFileResponse)
+
+	@handler DeleteFilesHandler
+	delete /api/files (DeleteFilesRequest) returns (DeleteFilesResponse)
 
 	@handler CreateDirectoryHandler
 	post /api/files/directory (CreateDirectoryRequest) returns (CreateDirectoryResponse)
 
-	@handler FileDownloadHandler
-	get /api/files/:uuid (FileDownloadRequest)
+	@handler GetOneFileHandler
+	get /api/files/:id (GetOneFileRequest) returns (FileDTO)
 
 	@handler GetMyFilesHandler
 	get /api/files/mine (GetMyFileRequest) returns ([]FileDTO)
+}
+
+@server(
+	jwt: Auth
+	middleware: CheckBlackList
+	timeout: 1800000ms
+)
+service cloud-disk-api {
+	@handler FileDownloadHandler
+	get /api/files/download/:uuid (FileDownloadRequest)
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"disko/model"
 	"errors"
+	"fmt"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
 
@@ -29,8 +30,9 @@ func NewMeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MeLogic {
 
 func (l *MeLogic) Me() (resp *types.UserDTO, err error) {
 	var user *model.User
-	var id = cast.ToUint(l.ctx.Value("id"))
+	id := cast.ToUint(l.ctx.Value("id"))
 	user, err = l.svcCtx.UserDAO.FindById(id)
+	fmt.Printf("id = %d, me: %+v", id, user)
 	if user != nil {
 		return &types.UserDTO{
 			ID:    user.ID,

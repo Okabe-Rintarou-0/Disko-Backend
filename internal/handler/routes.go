@@ -3,6 +3,7 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
 	"disko/internal/svc"
 
@@ -56,8 +57,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodDelete,
-					Path:    "/api/files/:id",
+					Path:    "/api/files/:uuid",
 					Handler: DeleteFileHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/api/files",
+					Handler: DeleteFilesHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -66,8 +72,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodGet,
-					Path:    "/api/files/:uuid",
-					Handler: FileDownloadHandler(serverCtx),
+					Path:    "/api/files/:id",
+					Handler: GetOneFileHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodGet,
@@ -77,5 +83,20 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckBlackList},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/api/files/download/:uuid",
+					Handler: FileDownloadHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(1800000*time.Millisecond),
 	)
 }

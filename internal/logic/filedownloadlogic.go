@@ -70,6 +70,7 @@ func (l *FileDownloadLogic) FileDownload(req *types.FileDownloadRequest, w http.
 	savedName := fileMeta.Name + fileMeta.Ext
 	w.Header().Set("Content-Type", "application/octect-stream")
 	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename*=UTF-8''%s", url.QueryEscape(savedName)))
+	w.Header().Set("Content-Length", cast.ToString(fileMeta.Size))
 
 	// Copy source to destination, but wrap our reader with rate limited one
 	_, err = io.Copy(w, ratelimit.Reader(src, bucket))

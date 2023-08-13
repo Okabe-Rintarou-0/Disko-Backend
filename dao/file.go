@@ -14,6 +14,7 @@ type IFileDAO interface {
 	FindByOwner(ownerID uint) ([]*model.File, error)
 	Search(owner *uint, parent *uint, keyword string, extensions []string) ([]*model.File, error)
 	DeleteById(id uint) error
+	DeleteByUUID(uuid string) error
 }
 
 func NewFileDAO() IFileDAO {
@@ -21,6 +22,12 @@ func NewFileDAO() IFileDAO {
 }
 
 type FileDAO struct{}
+
+func (fd *FileDAO) DeleteByUUID(uuid string) error {
+	f := query.Use(db).File
+	_, err := f.WithContext(ctx).Where(f.UUID.Eq(uuid)).Delete()
+	return err
+}
 
 func (fd *FileDAO) DeleteById(id uint) error {
 	f := query.Use(db).File

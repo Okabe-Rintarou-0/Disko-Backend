@@ -50,6 +50,7 @@ func (l *GetMyFilesLogic) GetMyFiles(req *types.GetMyFileRequest) (resp []types.
 			Owner:   f.Owner,
 			IsDir:   f.IsDir,
 			Private: f.Private,
+			Parent:  f.ParentID,
 		}
 	}
 

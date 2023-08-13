@@ -34,7 +34,7 @@ func (l *DeleteFileLogic) DeleteFile(req *types.DeleteFileRequest) (resp *types.
 	)
 
 	owner = cast.ToUint(l.ctx.Value("id"))
-	file, err = l.svcCtx.FileDAO.FindById(req.ID)
+	file, err = l.svcCtx.FileDAO.FindByUUID(req.UUID)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (l *DeleteFileLogic) DeleteFile(req *types.DeleteFileRequest) (resp *types.
 		}, nil
 	}
 
-	err = l.svcCtx.FileDAO.DeleteById(req.ID)
+	err = l.svcCtx.FileDAO.DeleteByUUID(req.UUID)
 	if err != nil {
 		return nil, err
 	}

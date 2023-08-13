@@ -68,7 +68,16 @@ type DeleteFileResponse struct {
 }
 
 type DeleteFileRequest struct {
-	ID uint `path:"id"`
+	UUID string `path:"uuid"`
+}
+
+type DeleteFilesRequest struct {
+	UUIDs []string `form:"uuids"`
+}
+
+type DeleteFilesResponse struct {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
 }
 
 type CreateDirectoryRequest struct {
@@ -106,10 +115,15 @@ type FileDTO struct {
 	Owner   uint   `json:"owner"`
 	IsDir   bool   `json:"isDir"`
 	Private bool   `json:"private"`
+	Parent  *uint  `json:"parent"`
 }
 
 type GetMyFileRequest struct {
 	Parent     *uint    `form:"parent,optional"`
 	Keyword    string   `form:"keyword,optional"`
 	Extensions []string `form:"extensions,optional"`
+}
+
+type GetOneFileRequest struct {
+	ID uint `path:"id"`
 }

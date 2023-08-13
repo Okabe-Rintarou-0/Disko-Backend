@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
+	"path"
 
 	"disko/internal/svc"
 	"disko/internal/types"
@@ -77,10 +78,14 @@ func (l *CreateDirectoryLogic) CreateDirectory(req *types.CreateDirectoryRequest
 			Ok:      false,
 		}, nil
 	}
+	parentPath := ""
+	if parent != nil {
+		parentPath = parent.Name
+	}
 
 	// dir is logical, we don't need to create a real one
 	err = l.svcCtx.FileDAO.Save(&model.File{
-		Name:     req.Name,
+		Name:     path.Join(parentPath, req.Name),
 		Ext:      "",
 		Size:     0,
 		UUID:     uuid.NewString(),
