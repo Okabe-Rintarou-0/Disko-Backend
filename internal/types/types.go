@@ -89,6 +89,7 @@ type UpdateFileRequest struct {
 	ID      uint   `path:"id"`
 	Name    string `form:"name,optional"`
 	Private *bool  `form:"private,optional"`
+	Parent  *uint  `form:"parent,optional"`
 }
 
 type UpdateFileResponse struct {

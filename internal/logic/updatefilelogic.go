@@ -30,7 +30,8 @@ func NewUpdateFileLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 
 func (l *UpdateFileLogic) UpdateFile(req *types.UpdateFileRequest) (resp *types.UpdateFileResponse, err error) {
 	var (
-		file *model.File
+		file   *model.File
+		parent *model.File
 	)
 
 	file, err = l.svcCtx.FileDAO.FindById(req.ID)
@@ -51,6 +52,42 @@ func (l *UpdateFileLogic) UpdateFile(req *types.UpdateFileRequest) (resp *types.
 			Message: "非法操作！无权限！",
 			Ok:      false,
 		}, nil
+	}
+
+	if req.Parent != nil && *req.Parent > 0 {
+		// cannot move under itself
+		if req.ID == *req.Parent {
+			return &types.UpdateFileResponse{
+				Message: "非法操作！请正确指定文件夹！",
+				Ok:      false,
+			}, nil
+		}
+
+		parent, err = l.svcCtx.FileDAO.FindById(*req.Parent)
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		}
+
+		if parent == nil {
+			return &types.UpdateFileResponse{
+				Message: "指定的文件夹不存在！",
+				Ok:      false,
+			}, nil
+		}
+
+		if !parent.IsDir {
+			return &types.UpdateFileResponse{
+				Message: "非法操作！请正确指定文件夹！",
+				Ok:      false,
+			}, nil
+		}
+
+		// use zero to refer null
+		file.ParentID = req.Parent
+	}
+
+	if req.Parent != nil && *req.Parent == 0 {
+		file.ParentID = nil
 	}
 
 	if len(req.Name) > 0 {
