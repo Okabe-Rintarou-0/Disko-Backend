@@ -33,7 +33,7 @@ func newFile(db *gorm.DB, opts ...gen.DOOption) file {
 	_file.DeletedAt = field.NewField(tableName, "deleted_at")
 	_file.Name = field.NewString(tableName, "name")
 	_file.Ext = field.NewString(tableName, "ext")
-	_file.Size = field.NewInt64(tableName, "size")
+	_file.Size = field.NewInt(tableName, "size")
 	_file.UUID = field.NewString(tableName, "uuid")
 	_file.Path = field.NewString(tableName, "path")
 	_file.Owner = field.NewUint(tableName, "owner")
@@ -66,7 +66,7 @@ type file struct {
 	DeletedAt field.Field
 	Name      field.String
 	Ext       field.String
-	Size      field.Int64
+	Size      field.Int
 	UUID      field.String
 	Path      field.String
 	Owner     field.Uint
@@ -96,7 +96,7 @@ func (f *file) updateTableName(table string) *file {
 	f.DeletedAt = field.NewField(table, "deleted_at")
 	f.Name = field.NewString(table, "name")
 	f.Ext = field.NewString(table, "ext")
-	f.Size = field.NewInt64(table, "size")
+	f.Size = field.NewInt(table, "size")
 	f.UUID = field.NewString(table, "uuid")
 	f.Path = field.NewString(table, "path")
 	f.Owner = field.NewUint(table, "owner")

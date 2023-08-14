@@ -97,6 +97,16 @@ type UpdateFileResponse struct {
 	Ok      bool   `json:"ok"`
 }
 
+type MoveFilesRequest struct {
+	IDs    []uint `form:"ids"`
+	Parent uint   `form:"parent"`
+}
+
+type MoveFilesResponse struct {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
 type FileDownloadRequest struct {
 	UUID string `path:"uuid"`
 }

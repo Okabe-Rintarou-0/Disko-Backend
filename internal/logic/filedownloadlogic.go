@@ -1,11 +1,9 @@
 package logic
 
 import (
-	"bufio"
 	"context"
 	"errors"
 	"fmt"
-	"github.com/juju/ratelimit"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
 	"io"
@@ -42,6 +40,11 @@ func (l *FileDownloadLogic) FileDownload(req *types.FileDownloadRequest, w http.
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return err
 	}
+	owner := cast.ToUint(l.ctx.Value("id"))
+	if fileMeta.Owner != owner && fileMeta.Private {
+		w.WriteHeader(http.StatusUnauthorized)
+		return nil
+	}
 
 	// found no file or file is a directory, so just return 404
 	if fileMeta == nil || fileMeta.IsDir {
@@ -60,24 +63,42 @@ func (l *FileDownloadLogic) FileDownload(req *types.FileDownloadRequest, w http.
 
 	var file *os.File
 	file, err = os.Open(filePath)
-	src := bufio.NewReader(file)
+	//src := bufio.NewReader(file)
 
 	rate := l.svcCtx.Config.FileStorage.MaxDownloadRate * (1 << 20)
-	capacity := cast.ToInt64(rate)
-	bucket := ratelimit.NewBucketWithRate(rate, capacity)
-	start := time.Now()
+	//capacity := cast.ToInt64(rate)
+	//bucket := ratelimit.NewBucketWithRate(rate, capacity)
 
 	savedName := fileMeta.Name + fileMeta.Ext
 	w.Header().Set("Content-Type", "application/octect-stream")
 	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename*=UTF-8''%s", url.QueryEscape(savedName)))
 	w.Header().Set("Content-Length", cast.ToString(fileMeta.Size))
 
-	// Copy source to destination, but wrap our reader with rate limited one
-	_, err = io.Copy(w, ratelimit.Reader(src, bucket))
-	if err != nil {
-		return err
+	chunkNum := cast.ToInt(cast.ToFloat64(fileMeta.Size) / rate)
+	chunkSize := cast.ToInt64(rate)
+	for i := 0; i < chunkNum; i++ {
+		_, err = io.CopyN(w, file, chunkSize)
+		if err != nil {
+			return err
+		}
+		w.(http.Flusher).Flush()
+		time.Sleep(time.Second)
 	}
 
-	fmt.Printf("Copied in %s\n", time.Since(start))
+	chunkSize = fileMeta.Size % chunkSize
+	if chunkSize > 0 {
+		_, err = io.CopyN(w, file, chunkSize)
+		if err != nil {
+			return err
+		}
+		w.(http.Flusher).Flush()
+		time.Sleep(time.Second)
+	}
+
+	// Copy source to destination, but wrap our reader with rate limited one
+	//_, err = io.Copy(w, ratelimit.Reader(src, bucket))
+	//if err != nil {
+	//	return err
+	//}
 	return nil
 }

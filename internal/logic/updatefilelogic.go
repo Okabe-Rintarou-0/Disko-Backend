@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"disko/constants"
 	"disko/model"
 	"errors"
 	"github.com/spf13/cast"
@@ -75,9 +76,17 @@ func (l *UpdateFileLogic) UpdateFile(req *types.UpdateFileRequest) (resp *types.
 			}, nil
 		}
 
-		if !parent.IsDir {
+		// avoid circle
+		if !parent.IsDir || (parent.ParentID != nil && *parent.ParentID == req.ID) {
 			return &types.UpdateFileResponse{
 				Message: "非法操作！请正确指定文件夹！",
+				Ok:      false,
+			}, nil
+		}
+
+		if parent.Owner != owner {
+			return &types.UpdateFileResponse{
+				Message: "非法操作！无权限！",
 				Ok:      false,
 			}, nil
 		}
@@ -86,7 +95,7 @@ func (l *UpdateFileLogic) UpdateFile(req *types.UpdateFileRequest) (resp *types.
 		file.ParentID = req.Parent
 	}
 
-	if req.Parent != nil && *req.Parent == 0 {
+	if req.Parent != nil && *req.Parent == constants.RootDirId {
 		file.ParentID = nil
 	}
 

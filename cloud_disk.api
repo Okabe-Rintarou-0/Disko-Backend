@@ -96,6 +96,16 @@ type UpdateFileResponse {
 	Ok      bool   `json:"ok"`
 }
 
+type MoveFilesRequest {
+	IDs    []uint `form:"ids"`
+	Parent uint   `form:"parent"`
+}
+
+type MoveFilesResponse {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
 type FileDownloadRequest {
 	UUID string `path:"uuid"`
 }
@@ -157,6 +167,9 @@ service cloud-disk-api {
 
 	@handler UpdateFileHandler
 	put /api/files/:id (UpdateFileRequest) returns (UpdateFileResponse)
+
+	@handler MoveFilesHandler
+	put /api/files/move (MoveFilesRequest) returns (MoveFilesResponse)
 
 	@handler DeleteFileHandler
 	delete /api/files/:uuid (DeleteFileRequest) returns (DeleteFileResponse)

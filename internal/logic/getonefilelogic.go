@@ -4,6 +4,7 @@ import (
 	"context"
 	"disko/model"
 	"errors"
+	"fmt"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
 
@@ -42,6 +43,8 @@ func (l *GetOneFileLogic) GetOneFile(req *types.GetOneFileRequest) (resp *types.
 	if file == nil {
 		return nil, nil
 	}
+
+	fmt.Printf("%+v\n", file)
 
 	// if file is public, or is owned by me
 	if !file.Private || file.Owner == owner {
