@@ -81,6 +81,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: GetOneFileHandler(serverCtx),
 				},
 				{
+					Method:  http.MethodPost,
+					Path:    "/api/files/share/:id",
+					Handler: ShareFileHandler(serverCtx),
+				},
+				{
 					Method:  http.MethodGet,
 					Path:    "/api/files/mine",
 					Handler: GetMyFilesHandler(serverCtx),

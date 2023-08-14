@@ -85,6 +85,17 @@ type CreateDirectoryRequest struct {
 	Parent *uint  `form:"parent,optional"`
 }
 
+type ShareFileRequest struct {
+	ID       uint   `path:"id"`
+	Password string `form:"password"`
+	ExpireAt int64  `form:"expireAt"`
+}
+
+type ShareFileResponse struct {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
 type UpdateFileRequest struct {
 	ID      uint   `path:"id"`
 	Name    string `form:"name,optional"`

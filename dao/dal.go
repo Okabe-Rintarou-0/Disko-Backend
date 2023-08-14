@@ -48,7 +48,7 @@ func init() {
 		panic("连接数据库失败, error=" + err.Error())
 	}
 
-	err = db.AutoMigrate(&model.User{}, &model.File{})
+	err = db.AutoMigrate(&model.User{}, &model.File{}, &model.Share{})
 	if err != nil {
 		panic(err)
 	}

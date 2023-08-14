@@ -84,6 +84,17 @@ type CreateDirectoryRequest {
 	Parent *uint  `form:"parent,optional"`
 }
 
+type ShareFileRequest {
+	ID       uint   `path:"id"`
+	Password string `form:"password"`
+	ExpireAt int64  `form:"expireAt"`
+}
+
+type ShareFileResponse {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
+}
+
 type UpdateFileRequest {
 	ID      uint   `path:"id"`
 	Name    string `form:"name,optional"`
@@ -182,6 +193,9 @@ service cloud-disk-api {
 
 	@handler GetOneFileHandler
 	get /api/files/:id (GetOneFileRequest) returns (FileDTO)
+
+	@handler ShareFileHandler
+	post /api/files/share/:id (ShareFileRequest) returns (ShareFileResponse)
 
 	@handler GetMyFilesHandler
 	get /api/files/mine (GetMyFileRequest) returns ([]FileDTO)

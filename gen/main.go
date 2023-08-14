@@ -44,7 +44,7 @@ func main() {
 	g.UseDB(db)
 
 	// Generate default DAO interface for those specified structs
-	g.ApplyBasic(model.User{}, model.File{})
+	g.ApplyBasic(model.User{}, model.File{}, model.Share{})
 
 	// Execute the generator
 	g.Execute()
