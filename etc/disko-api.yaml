@@ -1,10 +1,14 @@
-Name: cloud-disk-api
+Name: disko-api
 Host: 0.0.0.0
 Port: 8888
 MaxBytes: 104857600
 Auth:
   AccessSecret: REPLACE_WITH_YOUR_SECRET
   AccessExpire: 3600
+Prometheus:
+  Host: 0.0.0.0
+  Port: 9080
+  Path: /metrics
 
 FileStorage:
   MaxFileSize: 4 #4G

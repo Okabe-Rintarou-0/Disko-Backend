@@ -150,7 +150,7 @@ type GetOneFileRequest {
 	ID uint `path:"id"`
 }
 
-service cloud-disk-api {
+service disko-api {
 	@handler LoginHandler
 	post /api/login (LoginRequest) returns (LoginResponse)
 
@@ -166,7 +166,7 @@ service cloud-disk-api {
 	middleware: CheckBlackList
 )
 
-service cloud-disk-api {
+service disko-api {
 	@handler MeHandler
 	get /api/me returns (UserDTO)
 
@@ -206,7 +206,7 @@ service cloud-disk-api {
 	middleware: CheckBlackList
 	timeout: 1800000ms
 )
-service cloud-disk-api {
+service disko-api {
 	@handler FileDownloadHandler
 	get /api/files/download/:uuid (FileDownloadRequest)
 }

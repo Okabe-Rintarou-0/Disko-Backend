@@ -1,0 +1,58 @@
+version: "3.9"
+services:
+  # pause container
+  localhost:
+    image: alpine:latest
+    container_name: localhost
+    command: sleep infinity
+    ports:
+      - "8888:8888"
+      - "9090:9090"
+      - "3307:3306"
+  redis:
+    image: redis:5.0.1
+    container_name: redis
+    command: redis-server
+    restart: always
+    volumes:
+      - ./data/redis/data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    network_mode: service:localhost
+    depends_on:
+      - localhost
+
+  mysql:
+    image: daocloud.io/library/mysql:8
+    container_name: mysql
+    restart: always
+    volumes:
+      - ./data/mysql/data:/var/lib/mysql
+      - ./data/mysql/mysql-files:/var/lib/mysql-files
+      - ./deployment/documents/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 45s
+      retries: 10
+    network_mode: "service:localhost"
+    depends_on:
+      - localhost
+
+  disko-backend:
+    image: disko-backend
+    restart: always
+    container_name: disko-backend
+    volumes:
+      - ./etc:/build/etc
+    network_mode: "service:localhost"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
