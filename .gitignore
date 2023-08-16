@@ -27,4 +27,4 @@ data
 
 *.rdb
 
-/etc/email.yaml
+**/email.yaml

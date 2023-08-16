@@ -46,3 +46,7 @@ JWT 本质上是将一些信息在服务器编码，在用户登录后将 token 
 使用 ratelimit 的时候发现前端始终没有弹开下载项，原因是服务器将数据都缓存了起来，然后一次性推给前端。
 
 解决方法：决定不使用 ratelimit, 自己用 time.sleep + w.(http.Flusher).Flush()。
+
+## 使用 Minikube 进行部署
+
++ 记得先用 minikube mount 把本地文件挂载到 minikube 中。

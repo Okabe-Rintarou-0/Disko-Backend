@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: disko-backend
+spec:
+  selector:
+    matchLabels:
+      app: disko-backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: disko-backend
+    spec:
+      containers:
+        - name: disko-backend
+          image: 923048992/disko-backend
+          volumeMounts:
+            - name: disko-config
+              mountPath: /build/etc
+            - name: disko-data
+              mountPath: /build/data
+      volumes:
+        - name: disko-config
+          hostPath:
+            path: /home/disko/deployment/etc
+        - name: disko-data
+          hostPath:
+            path: /home/disko/data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: disko-backend
+spec:
+  type: NodePort
+  ports:
+    - name: port8888
+      protocol: TCP
+      port: 8888
+      targetPort: 8888
+      nodePort: 30091
+  selector:
+    app: disko-backend

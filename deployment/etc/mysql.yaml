@@ -1,0 +1,7 @@
+Username: root
+Password: "123"
+Host: mysql
+Port: 3306
+Database: disko
+Timeout: 10s
+ShowSql: true
