@@ -1,0 +1,26 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Build Docker Image
+      run: |
+        docker build -t 923048992/disko-backend .
+        
+    - name: Log in to Docker Hub
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Push Docker Image
+      run: docker push 923048992/disko-backend
