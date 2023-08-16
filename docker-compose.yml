@@ -9,8 +9,6 @@ services:
     ports:
       - "8888:8888"
       - "9090:9090"
-      # TODO remove it
-      - "3307:3306"
   prometheus:
     image: prom/prometheus
     container_name: promethe  us

@@ -23,6 +23,9 @@ spec:
       containers:
         - name: mysql
           image: mysql:5.7.16
+          args:
+            - --character-set-server=utf8
+            - --collation-server=utf8_general_ci
           env:
             - name: MYSQL_ROOT_HOST
               value: "%"
