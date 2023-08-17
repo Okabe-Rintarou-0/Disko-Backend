@@ -12,6 +12,13 @@ spec:
       labels:
         app: disko-backend
     spec:
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox
+          command: [ 'sh', '-c', 'until nc -zv mysql 3306; do echo "Waiting for MySQL to start"; sleep 5; done;' ]
+        - name: wait-for-redis
+          image: busybox
+          command: [ 'sh', '-c', 'until nc -zv redis 6379; do echo "Waiting for Redis to start"; sleep 5; done;' ]
       containers:
         - name: disko-backend
           image: 923048992/disko-backend
