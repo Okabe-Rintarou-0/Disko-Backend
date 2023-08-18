@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"disko/constants"
 	"disko/model"
 	"disko/repository/redis"
 	"errors"
@@ -114,6 +115,7 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 		Name:     req.Name,
 		Password: encryptedPwd,
 		Email:    req.Email,
+		Quota:    constants.DefaultUserQuota,
 	})
 
 	if err != nil {

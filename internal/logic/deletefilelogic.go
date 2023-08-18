@@ -58,6 +58,11 @@ func (l *DeleteFileLogic) DeleteFile(req *types.DeleteFileRequest) (resp *types.
 		return nil, err
 	}
 
+	err = l.svcCtx.UserDAO.UpdateUsage(owner, -file.Size)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.DeleteFileResponse{
 		Message: "删除成功！",
 		Ok:      true,

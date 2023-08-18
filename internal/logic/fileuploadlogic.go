@@ -44,6 +44,8 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 		filePath string
 		existed  *model.File
 		parent   *model.File
+		quota    int64
+		usage    int64
 	)
 	owner := cast.ToUint(l.ctx.Value("id"))
 	// convert to bytes
@@ -124,6 +126,18 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 		return nil, err
 	}
 
+	quota, usage, err = l.svcCtx.UserDAO.GetQuotaAndUsage(owner)
+	if err != nil {
+		return nil, err
+	}
+
+	if quota < usage+header.Size {
+		return &types.FileUploadResponse{
+			Message: "空间不足！",
+			Ok:      false,
+		}, nil
+	}
+
 	// it must be a file
 	// since directory can only be created instead of uploaded
 	err = l.svcCtx.FileDAO.Save(&model.File{
@@ -139,6 +153,11 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 		ParentID: req.Parent,
 		Parent:   parent,
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	err = l.svcCtx.UserDAO.UpdateUsage(owner, header.Size)
 	if err != nil {
 		return nil, err
 	}
