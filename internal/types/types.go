@@ -126,6 +126,8 @@ type UserDTO struct {
 	ID    uint   `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
+	Quota int64  `json:"quota"`
+	Usage int64  `json:"usage"`
 }
 
 type FileDTO struct {

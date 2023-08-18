@@ -38,6 +38,8 @@ func (l *MeLogic) Me() (resp *types.UserDTO, err error) {
 			ID:    user.ID,
 			Name:  user.Name,
 			Email: user.Email,
+			Quota: user.Quota,
+			Usage: user.Usage,
 		}, nil
 	}
 	if errors.Is(err, gorm.ErrRecordNotFound) {
