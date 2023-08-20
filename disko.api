@@ -77,9 +77,9 @@ type CreateDirectoryRequest {
 }
 
 type ShareFileRequest {
-	ID       uint   `path:"id"`
-	Password string `form:"password"`
-	ExpireAt int64  `form:"expireAt"`
+	ID       uint    `path:"id"`
+	Password *string `form:"password, optional"`
+	ExpireAt *int64  `form:"expireAt, optional"`
 }
 
 type ShareFileResponse {
@@ -87,8 +87,8 @@ type ShareFileResponse {
 }
 
 type DownloadSharedFileRequest {
-	UUID     string `path:"uuid"`
-	Password string `form:"password"`
+	UUID     string  `path:"uuid"`
+	Password *string `form:"password"`
 }
 
 type DownloadSharedFileResponse {
@@ -96,9 +96,9 @@ type DownloadSharedFileResponse {
 }
 
 type SaveSharedFileRequest {
-	UUID     string `path:"uuid"`
-	Password string `form:"password"`
-	Name     string `form:"name,optional"`
+	UUID     string  `path:"uuid"`
+	Password *string `form:"password"`
+	Name     string  `form:"name,optional"`
 }
 
 type SaveSharedFileResponse {

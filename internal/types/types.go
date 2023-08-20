@@ -78,9 +78,9 @@ type CreateDirectoryRequest struct {
 }
 
 type ShareFileRequest struct {
-	ID       uint   `path:"id"`
-	Password string `form:"password"`
-	ExpireAt int64  `form:"expireAt"`
+	ID       uint    `path:"id"`
+	Password *string `form:"password, optional"`
+	ExpireAt *int64  `form:"expireAt, optional"`
 }
 
 type ShareFileResponse struct {
@@ -88,8 +88,8 @@ type ShareFileResponse struct {
 }
 
 type DownloadSharedFileRequest struct {
-	UUID     string `path:"uuid"`
-	Password string `form:"password"`
+	UUID     string  `path:"uuid"`
+	Password *string `form:"password"`
 }
 
 type DownloadSharedFileResponse struct {
@@ -97,9 +97,9 @@ type DownloadSharedFileResponse struct {
 }
 
 type SaveSharedFileRequest struct {
-	UUID     string `path:"uuid"`
-	Password string `form:"password"`
-	Name     string `form:"name,optional"`
+	UUID     string  `path:"uuid"`
+	Password *string `form:"password"`
+	Name     string  `form:"name,optional"`
 }
 
 type SaveSharedFileResponse struct {

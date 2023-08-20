@@ -5,6 +5,7 @@ import (
 	"disko/dao"
 	"disko/model"
 	"net/http"
+	"time"
 
 	"disko/internal/svc"
 	"disko/internal/types"
@@ -45,8 +46,17 @@ func (l *DownloadSharedFileLogic) DownloadSharedFile(req *types.DownloadSharedFi
 		}, nil
 	}
 
+	if share.ExpireAt.Time.Before(time.Now()) {
+		return &types.DownloadSharedFileResponse{
+			BaseResponse: types.BaseResponse{
+				Message: "分享已过期！",
+				Ok:      false,
+			},
+		}, nil
+	}
+
 	// if password is not matched, return share and a corresponding error
-	if share.Password != req.Password {
+	if req.Password != nil && share.Password != nil && *share.Password != *req.Password {
 		return &types.DownloadSharedFileResponse{
 			BaseResponse: types.BaseResponse{
 				Message: "分享的密码错误！",

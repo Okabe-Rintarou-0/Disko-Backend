@@ -33,7 +33,7 @@ func newShare(db *gorm.DB, opts ...gen.DOOption) share {
 	_share.DeletedAt = field.NewField(tableName, "deleted_at")
 	_share.UUID = field.NewString(tableName, "uuid")
 	_share.Password = field.NewString(tableName, "password")
-	_share.ExpireAt = field.NewTime(tableName, "expire_at")
+	_share.ExpireAt = field.NewField(tableName, "expire_at")
 	_share.FileID = field.NewUint(tableName, "file_id")
 	_share.UserID = field.NewUint(tableName, "user_id")
 	_share.File = shareBelongsToFile{
@@ -73,7 +73,7 @@ type share struct {
 	DeletedAt field.Field
 	UUID      field.String
 	Password  field.String
-	ExpireAt  field.Time
+	ExpireAt  field.Field
 	FileID    field.Uint
 	UserID    field.Uint
 	File      shareBelongsToFile
@@ -101,7 +101,7 @@ func (s *share) updateTableName(table string) *share {
 	s.DeletedAt = field.NewField(table, "deleted_at")
 	s.UUID = field.NewString(table, "uuid")
 	s.Password = field.NewString(table, "password")
-	s.ExpireAt = field.NewTime(table, "expire_at")
+	s.ExpireAt = field.NewField(table, "expire_at")
 	s.FileID = field.NewUint(table, "file_id")
 	s.UserID = field.NewUint(table, "user_id")
 

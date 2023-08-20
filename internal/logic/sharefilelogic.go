@@ -2,10 +2,12 @@ package logic
 
 import (
 	"context"
+	"database/sql"
 	"disko/dao"
 	"disko/model"
 	"github.com/google/uuid"
 	"github.com/spf13/cast"
+	"regexp"
 	"time"
 
 	"disko/internal/svc"
@@ -13,6 +15,8 @@ import (
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
+
+var sharePasswordRegex = regexp.MustCompile("[0-9a-zA-Z]{4}")
 
 type ShareFileLogic struct {
 	logx.Logger
@@ -68,10 +72,27 @@ func (l *ShareFileLogic) ShareFile(req *types.ShareFileRequest) (resp *types.Sha
 		}, nil
 	}
 
+	if req.Password != nil && !sharePasswordRegex.MatchString(*req.Password) {
+		return &types.ShareFileResponse{
+			BaseResponse: types.BaseResponse{
+				Message: "密码格式错误！",
+				Ok:      false,
+			},
+		}, nil
+	}
+
+	var expireAt sql.NullTime
+	if req.ExpireAt != nil {
+		expireAt = sql.NullTime{
+			Time:  time.Unix(0, *req.ExpireAt*int64(time.Millisecond)),
+			Valid: true,
+		}
+	}
+
 	err = l.svcCtx.ShareDAO.Save(&model.Share{
 		UUID:     uuid.NewString(),
 		Password: req.Password,
-		ExpireAt: time.Unix(0, req.ExpireAt*int64(time.Millisecond)),
+		ExpireAt: expireAt,
 		FileID:   req.ID,
 		UserID:   owner,
 	})
@@ -82,7 +103,7 @@ func (l *ShareFileLogic) ShareFile(req *types.ShareFileRequest) (resp *types.Sha
 	return &types.ShareFileResponse{
 		BaseResponse: types.BaseResponse{
 			Message: "分享成功！",
-			Ok:      false,
+			Ok:      true,
 		},
 	}, nil
 }
