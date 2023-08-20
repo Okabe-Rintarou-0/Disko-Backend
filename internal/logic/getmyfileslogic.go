@@ -2,13 +2,11 @@ package logic
 
 import (
 	"context"
-	"disko/model"
-	"errors"
-	"github.com/spf13/cast"
-	"gorm.io/gorm"
-
+	"disko/dao"
 	"disko/internal/svc"
 	"disko/internal/types"
+	"disko/model"
+	"github.com/spf13/cast"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -35,7 +33,7 @@ func (l *GetMyFilesLogic) GetMyFiles(req *types.GetMyFileRequest) (resp []types.
 	ownerId := cast.ToUint(l.ctx.Value("id"))
 	files, err = l.svcCtx.FileDAO.Search(&ownerId, req.Parent, req.Keyword, req.Extensions)
 
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil && !dao.IsErrRecordNotFound(err) {
 		return nil, err
 	}
 

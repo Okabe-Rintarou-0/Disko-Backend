@@ -2,11 +2,10 @@ package logic
 
 import (
 	"context"
+	"disko/dao"
 	"disko/model"
-	"errors"
 	"github.com/google/uuid"
 	"github.com/spf13/cast"
-	"gorm.io/gorm"
 	"path"
 
 	"disko/internal/svc"
@@ -37,8 +36,10 @@ func (l *CreateDirectoryLogic) CreateDirectory(req *types.CreateDirectoryRequest
 
 	if len(req.Name) == 0 {
 		return &types.CreateDirectoryResponse{
-			Message: "文件夹名字不得为空！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "文件夹名字不得为空！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
@@ -47,35 +48,41 @@ func (l *CreateDirectoryLogic) CreateDirectory(req *types.CreateDirectoryRequest
 	// step 1 check whether parent exists
 	if req.Parent != nil {
 		parent, err = l.svcCtx.FileDAO.FindById(*req.Parent)
-		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		if err != nil && !dao.IsErrRecordNotFound(err) {
 			return nil, err
 		}
 
 		if parent == nil {
 			return &types.CreateDirectoryResponse{
-				Message: "指定的文件夹不存在！",
-				Ok:      false,
+				BaseResponse: types.BaseResponse{
+					Message: "指定的文件夹不存在！",
+					Ok:      false,
+				},
 			}, nil
 		}
 
 		// if parent does not belong to me, then I have no authority to create a file under it
 		if parent.Owner != owner {
 			return &types.CreateDirectoryResponse{
-				Message: "非法操作！无权限！",
-				Ok:      false,
+				BaseResponse: types.BaseResponse{
+					Message: "非法操作！无权限！",
+					Ok:      false,
+				},
 			}, nil
 		}
 	}
 
 	existed, err = l.svcCtx.FileDAO.FindByOwnerAndParentAndName(owner, req.Parent, req.Name)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil && !dao.IsErrRecordNotFound(err) {
 		return nil, err
 	}
 
 	if existed != nil && existed.IsDir {
 		return &types.CreateDirectoryResponse{
-			Message: "已存在同名文件夹！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "已存在同名文件夹！",
+				Ok:      false,
+			},
 		}, nil
 	}
 	parentPath := ""
@@ -100,7 +107,9 @@ func (l *CreateDirectoryLogic) CreateDirectory(req *types.CreateDirectoryRequest
 	}
 
 	return &types.CreateDirectoryResponse{
-		Message: "创建成功！",
-		Ok:      true,
+		BaseResponse: types.BaseResponse{
+			Message: "创建成功！",
+			Ok:      true,
+		},
 	}, nil
 }

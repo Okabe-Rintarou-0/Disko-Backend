@@ -31,8 +31,10 @@ func (l *LogoutLogic) Logout(req *types.LogoutRequest) (resp *types.LogoutRespon
 	token, ok = utils.GetToken(req.Token)
 	if !ok {
 		return &types.LogoutResponse{
-			Message: "登录令牌错误！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "登录令牌错误！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
@@ -41,7 +43,9 @@ func (l *LogoutLogic) Logout(req *types.LogoutRequest) (resp *types.LogoutRespon
 		return nil, err
 	}
 	return &types.LogoutResponse{
-		Message: "登出成功！",
-		Ok:      true,
+		BaseResponse: types.BaseResponse{
+			Message: "登出成功！",
+			Ok:      true,
+		},
 	}, nil
 }

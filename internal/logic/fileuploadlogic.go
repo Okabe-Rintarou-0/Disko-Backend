@@ -2,14 +2,13 @@ package logic
 
 import (
 	"context"
+	"disko/dao"
 	"disko/internal/svc"
 	"disko/internal/types"
 	"disko/model"
-	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/spf13/cast"
-	"gorm.io/gorm"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -63,30 +62,36 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 
 	if header.Size > maxFileSize {
 		return &types.FileUploadResponse{
-			Message: fmt.Sprintf("超过文件大小上限：%fGB", l.svcCtx.Config.FileStorage.MaxFileSize),
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: fmt.Sprintf("超过文件大小上限：%fGB", l.svcCtx.Config.FileStorage.MaxFileSize),
+				Ok:      false,
+			},
 		}, nil
 	}
 
 	if req.Parent != nil {
 		parent, err = l.svcCtx.FileDAO.FindById(*req.Parent)
-		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		if err != nil && !dao.IsErrRecordNotFound(err) {
 			return nil, err
 		}
 
 		// specified parent does not exist
 		if parent == nil {
 			return &types.FileUploadResponse{
-				Message: "指定的文件夹不存在！",
-				Ok:      false,
+				BaseResponse: types.BaseResponse{
+					Message: "指定的文件夹不存在！",
+					Ok:      false,
+				},
 			}, nil
 		}
 
 		// if parent does not belong to me, then I have no authority to create a file under it
 		if parent.Owner != owner {
 			return &types.FileUploadResponse{
-				Message: "非法操作！无权限！",
-				Ok:      false,
+				BaseResponse: types.BaseResponse{
+					Message: "非法操作！无权限！",
+					Ok:      false,
+				},
 			}, nil
 		}
 	}
@@ -97,7 +102,7 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 
 	// only one case is invalid: same name under same parent directory
 	existed, err = l.svcCtx.FileDAO.FindByOwnerAndParentAndName(owner, req.Parent, filename)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil && !dao.IsErrRecordNotFound(err) {
 		return nil, err
 	}
 
@@ -105,8 +110,10 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 	// this statement means: 'if exists file with same name'
 	if existed != nil && !existed.IsDir {
 		return &types.FileUploadResponse{
-			Message: "已存在同名文件！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "已存在同名文件！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
@@ -133,8 +140,10 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 
 	if quota < usage+header.Size {
 		return &types.FileUploadResponse{
-			Message: "空间不足！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "空间不足！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
@@ -163,7 +172,9 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 	}
 
 	return &types.FileUploadResponse{
-		Message: "上传成功！",
-		Ok:      true,
+		BaseResponse: types.BaseResponse{
+			Message: "上传成功！",
+			Ok:      true,
+		},
 	}, nil
 }

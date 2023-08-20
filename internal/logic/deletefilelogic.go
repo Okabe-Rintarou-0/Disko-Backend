@@ -2,13 +2,11 @@ package logic
 
 import (
 	"context"
-	"disko/model"
-	"errors"
-	"github.com/spf13/cast"
-	"gorm.io/gorm"
-
+	"disko/dao"
 	"disko/internal/svc"
 	"disko/internal/types"
+	"disko/model"
+	"github.com/spf13/cast"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -35,21 +33,25 @@ func (l *DeleteFileLogic) DeleteFile(req *types.DeleteFileRequest) (resp *types.
 
 	owner = cast.ToUint(l.ctx.Value("id"))
 	file, err = l.svcCtx.FileDAO.FindByUUID(req.UUID)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil && !dao.IsErrRecordNotFound(err) {
 		return nil, err
 	}
 
 	if file == nil {
 		return &types.DeleteFileResponse{
-			Message: "指定的文件或文件夹不存在！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "指定的文件或文件夹不存在！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
 	if file.Owner != owner {
 		return &types.DeleteFileResponse{
-			Message: "非法操作！无权限！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "非法操作！无权限！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
@@ -63,8 +65,12 @@ func (l *DeleteFileLogic) DeleteFile(req *types.DeleteFileRequest) (resp *types.
 		return nil, err
 	}
 
+	// check shared files
+
 	return &types.DeleteFileResponse{
-		Message: "删除成功！",
-		Ok:      true,
+		BaseResponse: types.BaseResponse{
+			Message: "删除成功！",
+			Ok:      true,
+		},
 	}, nil
 }

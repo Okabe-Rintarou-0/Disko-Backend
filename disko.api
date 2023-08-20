@@ -12,21 +12,19 @@ type RegisterRequest {
 	Vcode    string `form:"vcode"`
 }
 
-type Response {
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+type BaseResponse {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
 }
 
 type LoginResponse {
-	Message  string `json:"message"`
-	Ok       bool   `json:"ok"`
+	BaseResponse
 	Token    string `json:"token"`
 	ExpireAt int64  `json:"expireAt"`
 }
 
 type RegisterResponse {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type LogoutRequest {
@@ -34,8 +32,7 @@ type LogoutRequest {
 }
 
 type LogoutResponse {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type RegisterVcodeRequest {
@@ -43,13 +40,11 @@ type RegisterVcodeRequest {
 }
 
 type RegisterVcodeResponse {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type FileUploadResponse {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type FileUploadRequest {
@@ -57,13 +52,11 @@ type FileUploadRequest {
 }
 
 type CreateDirectoryResponse {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type DeleteFileResponse {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type DeleteFileRequest {
@@ -75,8 +68,7 @@ type DeleteFilesRequest {
 }
 
 type DeleteFilesResponse {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type CreateDirectoryRequest {
@@ -91,8 +83,26 @@ type ShareFileRequest {
 }
 
 type ShareFileResponse {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
+}
+
+type DownloadSharedFileRequest {
+	UUID     string `path:"uuid"`
+	Password string `form:"password"`
+}
+
+type DownloadSharedFileResponse {
+	BaseResponse
+}
+
+type SaveSharedFileRequest {
+	UUID     string `path:"uuid"`
+	Password string `form:"password"`
+	Name     string `form:"name,optional"`
+}
+
+type SaveSharedFileResponse {
+	BaseResponse
 }
 
 type UpdateFileRequest {
@@ -103,8 +113,7 @@ type UpdateFileRequest {
 }
 
 type UpdateFileResponse {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type MoveFilesRequest {
@@ -113,8 +122,7 @@ type MoveFilesRequest {
 }
 
 type MoveFilesResponse {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type FileDownloadRequest {
@@ -198,6 +206,12 @@ service disko-api {
 
 	@handler ShareFileHandler
 	post /api/files/share/:id (ShareFileRequest) returns (ShareFileResponse)
+
+	@handler DownloadSharedFileHandler
+	get /api/files/shared/:uuid (DownloadSharedFileRequest) returns (DownloadSharedFileResponse)
+
+	@handler SaveSharedFileHandler
+	post /api/files/shared/save/:uuid (SaveSharedFileRequest) returns (SaveSharedFileResponse)
 
 	@handler GetMyFilesHandler
 	get /api/files/mine (GetMyFileRequest) returns ([]FileDTO)

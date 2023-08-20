@@ -2,11 +2,10 @@ package logic
 
 import (
 	"context"
+	"disko/dao"
 	"disko/model"
-	"errors"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 	"time"
 
 	"disko/internal/svc"
@@ -37,10 +36,12 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	l.Logger.Infof("Receive email: %s and password: %s", req.Email, req.Password)
 
 	user, err = l.svcCtx.UserDAO.FindByEmail(req.Email)
-	if user == nil && errors.Is(err, gorm.ErrRecordNotFound) {
+	if user == nil && dao.IsErrRecordNotFound(err) {
 		return &types.LoginResponse{
-			Message: "用户不存在！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "用户不存在！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
@@ -48,8 +49,10 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
 	if err != nil {
 		return &types.LoginResponse{
-			Message: "密码错误！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "密码错误！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
@@ -63,8 +66,10 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	}
 
 	return &types.LoginResponse{
-		Message:  "登录成功！",
-		Ok:       true,
+		BaseResponse: types.BaseResponse{
+			Message: "登录成功！",
+			Ok:      true,
+		},
 		Token:    jwtToken,
 		ExpireAt: now + accessExpire,
 	}, err

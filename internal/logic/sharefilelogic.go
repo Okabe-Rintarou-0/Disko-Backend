@@ -2,11 +2,10 @@ package logic
 
 import (
 	"context"
+	"disko/dao"
 	"disko/model"
-	"errors"
 	"github.com/google/uuid"
 	"github.com/spf13/cast"
-	"gorm.io/gorm"
 	"time"
 
 	"disko/internal/svc"
@@ -38,28 +37,34 @@ func (l *ShareFileLogic) ShareFile(req *types.ShareFileRequest) (resp *types.Sha
 	owner = cast.ToUint(l.ctx.Value("id"))
 
 	file, err = l.svcCtx.FileDAO.FindById(req.ID)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil && !dao.IsErrRecordNotFound(err) {
 		return nil, err
 	}
 
 	if file == nil {
 		return &types.ShareFileResponse{
-			Message: "要分享的文件不存在！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "要分享的文件不存在！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
 	if file.Owner != owner {
 		return &types.ShareFileResponse{
-			Message: "无权分享该文件！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "无权分享该文件！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
 	if file.IsDir {
 		return &types.ShareFileResponse{
-			Message: "暂不支持分享文件夹！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "暂不支持分享文件夹！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
@@ -75,7 +80,9 @@ func (l *ShareFileLogic) ShareFile(req *types.ShareFileRequest) (resp *types.Sha
 	}
 
 	return &types.ShareFileResponse{
-		Message: "分享成功！",
-		Ok:      false,
+		BaseResponse: types.BaseResponse{
+			Message: "分享成功！",
+			Ok:      false,
+		},
 	}, nil
 }

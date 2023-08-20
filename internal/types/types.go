@@ -13,21 +13,19 @@ type RegisterRequest struct {
 	Vcode    string `form:"vcode"`
 }
 
-type Response struct {
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+type BaseResponse struct {
+	Message string `json:"message"`
+	Ok      bool   `json:"ok"`
 }
 
 type LoginResponse struct {
-	Message  string `json:"message"`
-	Ok       bool   `json:"ok"`
+	BaseResponse
 	Token    string `json:"token"`
 	ExpireAt int64  `json:"expireAt"`
 }
 
 type RegisterResponse struct {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type LogoutRequest struct {
@@ -35,8 +33,7 @@ type LogoutRequest struct {
 }
 
 type LogoutResponse struct {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type RegisterVcodeRequest struct {
@@ -44,13 +41,11 @@ type RegisterVcodeRequest struct {
 }
 
 type RegisterVcodeResponse struct {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type FileUploadResponse struct {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type FileUploadRequest struct {
@@ -58,13 +53,11 @@ type FileUploadRequest struct {
 }
 
 type CreateDirectoryResponse struct {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type DeleteFileResponse struct {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type DeleteFileRequest struct {
@@ -76,8 +69,7 @@ type DeleteFilesRequest struct {
 }
 
 type DeleteFilesResponse struct {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type CreateDirectoryRequest struct {
@@ -92,8 +84,26 @@ type ShareFileRequest struct {
 }
 
 type ShareFileResponse struct {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
+}
+
+type DownloadSharedFileRequest struct {
+	UUID     string `path:"uuid"`
+	Password string `form:"password"`
+}
+
+type DownloadSharedFileResponse struct {
+	BaseResponse
+}
+
+type SaveSharedFileRequest struct {
+	UUID     string `path:"uuid"`
+	Password string `form:"password"`
+	Name     string `form:"name,optional"`
+}
+
+type SaveSharedFileResponse struct {
+	BaseResponse
 }
 
 type UpdateFileRequest struct {
@@ -104,8 +114,7 @@ type UpdateFileRequest struct {
 }
 
 type UpdateFileResponse struct {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type MoveFilesRequest struct {
@@ -114,8 +123,7 @@ type MoveFilesRequest struct {
 }
 
 type MoveFilesResponse struct {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	BaseResponse
 }
 
 type FileDownloadRequest struct {

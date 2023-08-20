@@ -3,14 +3,13 @@ package logic
 import (
 	"context"
 	"disko/constants"
+	"disko/dao"
 	"disko/model"
 	"disko/repository/redis"
-	"errors"
 	"fmt"
 	"github.com/dlclark/regexp2"
 	"github.com/spf13/cast"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 	"regexp"
 
 	"disko/internal/svc"
@@ -69,15 +68,19 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 
 	if !l.verifyEmailFormat(req.Email) {
 		return &types.RegisterResponse{
-			Message: "邮箱格式错误！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "邮箱格式错误！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
 	if !l.verifyPasswordFormat(req.Password) {
 		return &types.RegisterResponse{
-			Message: "密码格式错误（包含至少一位数字，字母，且长度8-16）！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "密码格式错误（包含至少一位数字，字母，且长度8-16）！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
@@ -89,20 +92,24 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 
 	if req.Vcode != vcode {
 		return &types.RegisterResponse{
-			Message: "验证码错误！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "验证码错误！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
 	user, err = l.svcCtx.UserDAO.FindByEmail(req.Email)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil && !dao.IsErrRecordNotFound(err) {
 		return nil, err
 	}
 
 	if user != nil {
 		return &types.RegisterResponse{
-			Message: "注册失败！当前用户已存在！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "注册失败！当前用户已存在！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
@@ -129,7 +136,9 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 	}
 
 	return &types.RegisterResponse{
-		Message: "注册成功！",
-		Ok:      true,
+		BaseResponse: types.BaseResponse{
+			Message: "注册成功！",
+			Ok:      true,
+		},
 	}, nil
 }

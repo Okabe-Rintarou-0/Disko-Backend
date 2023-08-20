@@ -3,10 +3,9 @@ package logic
 import (
 	"context"
 	"disko/constants"
+	"disko/dao"
 	"disko/model"
-	"errors"
 	"github.com/spf13/cast"
-	"gorm.io/gorm"
 	"path"
 
 	"disko/internal/svc"
@@ -36,22 +35,26 @@ func (l *UpdateFileLogic) UpdateFile(req *types.UpdateFileRequest) (resp *types.
 	)
 
 	file, err = l.svcCtx.FileDAO.FindById(req.ID)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil && !dao.IsErrRecordNotFound(err) {
 		return nil, err
 	}
 
 	if file == nil {
 		return &types.UpdateFileResponse{
-			Message: "指定的文件不存在！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "指定的文件不存在！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
 	owner := cast.ToUint(l.ctx.Value("id"))
 	if file.Owner != owner {
 		return &types.UpdateFileResponse{
-			Message: "非法操作！无权限！",
-			Ok:      false,
+			BaseResponse: types.BaseResponse{
+				Message: "非法操作！无权限！",
+				Ok:      false,
+			},
 		}, nil
 	}
 
@@ -59,35 +62,43 @@ func (l *UpdateFileLogic) UpdateFile(req *types.UpdateFileRequest) (resp *types.
 		// cannot move under itself
 		if req.ID == *req.Parent {
 			return &types.UpdateFileResponse{
-				Message: "非法操作！请正确指定文件夹！",
-				Ok:      false,
+				BaseResponse: types.BaseResponse{
+					Message: "非法操作！请正确指定文件夹！",
+					Ok:      false,
+				},
 			}, nil
 		}
 
 		parent, err = l.svcCtx.FileDAO.FindById(*req.Parent)
-		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		if err != nil && !dao.IsErrRecordNotFound(err) {
 			return nil, err
 		}
 
 		if parent == nil {
 			return &types.UpdateFileResponse{
-				Message: "指定的文件夹不存在！",
-				Ok:      false,
+				BaseResponse: types.BaseResponse{
+					Message: "指定的文件夹不存在！",
+					Ok:      false,
+				},
 			}, nil
 		}
 
 		// avoid circle
 		if !parent.IsDir || (parent.ParentID != nil && *parent.ParentID == req.ID) {
 			return &types.UpdateFileResponse{
-				Message: "非法操作！请正确指定文件夹！",
-				Ok:      false,
+				BaseResponse: types.BaseResponse{
+					Message: "非法操作！请正确指定文件夹！",
+					Ok:      false,
+				},
 			}, nil
 		}
 
 		if parent.Owner != owner {
 			return &types.UpdateFileResponse{
-				Message: "非法操作！无权限！",
-				Ok:      false,
+				BaseResponse: types.BaseResponse{
+					Message: "非法操作！无权限！",
+					Ok:      false,
+				},
 			}, nil
 		}
 
@@ -116,7 +127,9 @@ func (l *UpdateFileLogic) UpdateFile(req *types.UpdateFileRequest) (resp *types.
 	}
 
 	return &types.UpdateFileResponse{
-		Message: "更新成功！",
-		Ok:      true,
+		BaseResponse: types.BaseResponse{
+			Message: "更新成功！",
+			Ok:      true,
+		},
 	}, nil
 }

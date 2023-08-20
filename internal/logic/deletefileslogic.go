@@ -40,7 +40,9 @@ func (l *DeleteFilesLogic) DeleteFiles(req *types.DeleteFilesRequest) (resp *typ
 	}
 
 	return &types.DeleteFilesResponse{
-		Message: res.Message,
-		Ok:      res.Ok,
+		BaseResponse: types.BaseResponse{
+			Message: res.Message,
+			Ok:      res.Ok,
+		},
 	}, nil
 }

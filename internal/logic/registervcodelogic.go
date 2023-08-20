@@ -57,18 +57,22 @@ func init() {
 type consumer struct{}
 
 func (c *consumer) Consume(delivery rmq.Delivery) {
-	var err error
+	var (
+		err error
+		key string
+	)
 	to := delivery.Payload()
 	vcode := c.genRandomVcode()
 	logger.Infof("准备发送验证码 %d 到 %s", vcode, to)
 
 	if err = c.sendVcode(to, vcode); err != nil {
 		logger.Error(err)
+		goto ack
 	}
 	logger.Infof("发送验证码成功！")
 
 	// record vcode
-	key := fmt.Sprintf("vcode:%s", to)
+	key = fmt.Sprintf("vcode:%s", to)
 	if err = redis.Set(key, cast.ToString(vcode)); err != nil {
 		logger.Error(err)
 	}
@@ -76,7 +80,7 @@ func (c *consumer) Consume(delivery rmq.Delivery) {
 	if err = redis.Expire(key, 600); err != nil {
 		logger.Error(err)
 	}
-
+ack:
 	if err = delivery.Ack(); err != nil {
 		// handle ack error
 		logger.Error(err)
@@ -113,8 +117,10 @@ func (l *RegisterVcodeLogic) RegisterVcode(req *types.RegisterVcodeRequest) (res
 	err = mq.Publish(req.Email)
 	if err == nil {
 		return &types.RegisterVcodeResponse{
-			Message: "发送验证码成功！",
-			Ok:      true,
+			BaseResponse: types.BaseResponse{
+				Message: "发送验证码成功！",
+				Ok:      true,
+			},
 		}, nil
 	}
 	return nil, err

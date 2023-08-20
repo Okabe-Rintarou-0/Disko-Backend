@@ -2,14 +2,12 @@ package logic
 
 import (
 	"context"
-	"disko/model"
-	"errors"
-	"fmt"
-	"github.com/spf13/cast"
-	"gorm.io/gorm"
-
+	"disko/dao"
 	"disko/internal/svc"
 	"disko/internal/types"
+	"disko/model"
+	"fmt"
+	"github.com/spf13/cast"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -42,7 +40,7 @@ func (l *MeLogic) Me() (resp *types.UserDTO, err error) {
 			Usage: user.Usage,
 		}, nil
 	}
-	if errors.Is(err, gorm.ErrRecordNotFound) {
+	if dao.IsErrRecordNotFound(err) {
 		err = nil
 	}
 	return nil, err
