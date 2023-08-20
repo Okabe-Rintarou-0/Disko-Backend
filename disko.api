@@ -183,9 +183,6 @@ service disko-api {
 	@handler LogoutHandler
 	put /api/logout (LogoutRequest) returns (LogoutResponse)
 
-	@handler FileUploadHandler
-	post /api/files (FileUploadRequest) returns (FileUploadResponse)
-
 	@handler UpdateFileHandler
 	put /api/files/:id (UpdateFileRequest) returns (UpdateFileResponse)
 
@@ -223,6 +220,9 @@ service disko-api {
 	timeout: 1800000ms
 )
 service disko-api {
+	@handler FileUploadHandler
+	post /api/files (FileUploadRequest) returns (FileUploadResponse)
+
 	@handler FileDownloadHandler
 	get /api/files/download/:uuid (FileDownloadRequest)
 }

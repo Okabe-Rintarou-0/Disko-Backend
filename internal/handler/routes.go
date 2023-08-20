@@ -46,11 +46,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: LogoutHandler(serverCtx),
 				},
 				{
-					Method:  http.MethodPost,
-					Path:    "/api/files",
-					Handler: FileUploadHandler(serverCtx),
-				},
-				{
 					Method:  http.MethodPut,
 					Path:    "/api/files/:id",
 					Handler: UpdateFileHandler(serverCtx),
@@ -109,6 +104,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.CheckBlackList},
 			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/api/files",
+					Handler: FileUploadHandler(serverCtx),
+				},
 				{
 					Method:  http.MethodGet,
 					Path:    "/api/files/download/:uuid",
