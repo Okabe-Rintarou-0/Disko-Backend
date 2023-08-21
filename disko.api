@@ -97,12 +97,30 @@ type DownloadSharedFileResponse {
 
 type SaveSharedFileRequest {
 	UUID     string  `path:"uuid"`
-	Password *string `form:"password"`
-	Name     string  `form:"name,optional"`
+	Password *string `form:"password, optional"`
+	Name     string  `form:"name, optional"`
 }
 
 type SaveSharedFileResponse {
 	BaseResponse
+}
+
+type GetSharedFileRequest {
+	UUID     string `path:"uuid"`
+	Password string `form:"password, optional"`
+}
+
+type GetSharedFileResponse {
+	BaseResponse
+	Data *ShareDTO `json:"data"`
+}
+
+type ShareDTO {
+	ID       uint    `json:"id"`
+	UUID     string  `json:"uuid"`
+	ExpireAt *int64  `json:"expireAt"`
+	File     FileDTO `json:"file"`
+	Username string  `json:"username"`
 }
 
 type UpdateFileRequest {
@@ -205,7 +223,10 @@ service disko-api {
 	post /api/files/share/:id (ShareFileRequest) returns (ShareFileResponse)
 
 	@handler DownloadSharedFileHandler
-	get /api/files/shared/:uuid (DownloadSharedFileRequest) returns (DownloadSharedFileResponse)
+	get /api/files/shared/download/:uuid (DownloadSharedFileRequest) returns (DownloadSharedFileResponse)
+
+	@handler GetSharedFileHandler
+	get /api/files/shared/:uuid (GetSharedFileRequest) returns (ShareDTO)
 
 	@handler SaveSharedFileHandler
 	post /api/files/shared/save/:uuid (SaveSharedFileRequest) returns (SaveSharedFileResponse)

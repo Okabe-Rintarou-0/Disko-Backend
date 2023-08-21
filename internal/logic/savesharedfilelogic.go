@@ -54,7 +54,7 @@ func (l *SaveSharedFileLogic) SaveSharedFile(req *types.SaveSharedFileRequest) (
 		}, nil
 	}
 
-	if share.ExpireAt.Time.Before(time.Now()) {
+	if share.ExpireAt.Valid && share.ExpireAt.Time.Before(time.Now()) {
 		return &types.SaveSharedFileResponse{
 			BaseResponse: types.BaseResponse{
 				Message: "分享已过期！",
@@ -139,7 +139,7 @@ func (l *SaveSharedFileLogic) SaveSharedFile(req *types.SaveSharedFileRequest) (
 
 	return &types.SaveSharedFileResponse{
 		BaseResponse: types.BaseResponse{
-			Message: "上传成功！",
+			Message: "保存成功！",
 			Ok:      true,
 		},
 	}, nil

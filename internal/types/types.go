@@ -98,12 +98,30 @@ type DownloadSharedFileResponse struct {
 
 type SaveSharedFileRequest struct {
 	UUID     string  `path:"uuid"`
-	Password *string `form:"password"`
-	Name     string  `form:"name,optional"`
+	Password *string `form:"password, optional"`
+	Name     string  `form:"name, optional"`
 }
 
 type SaveSharedFileResponse struct {
 	BaseResponse
+}
+
+type GetSharedFileRequest struct {
+	UUID     string `path:"uuid"`
+	Password string `form:"password, optional"`
+}
+
+type GetSharedFileResponse struct {
+	BaseResponse
+	Data *ShareDTO `json:"data"`
+}
+
+type ShareDTO struct {
+	ID       uint    `json:"id"`
+	UUID     string  `json:"uuid"`
+	ExpireAt *int64  `json:"expireAt"`
+	File     FileDTO `json:"file"`
+	Username string  `json:"username"`
 }
 
 type UpdateFileRequest struct {

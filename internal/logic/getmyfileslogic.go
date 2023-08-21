@@ -39,17 +39,7 @@ func (l *GetMyFilesLogic) GetMyFiles(req *types.GetMyFileRequest) (resp []types.
 
 	dtos = make([]types.FileDTO, len(files))
 	for i, f := range files {
-		dtos[i] = types.FileDTO{
-			ID:      f.ID,
-			Name:    f.Name,
-			Ext:     f.Ext,
-			Size:    f.Size,
-			UUID:    f.UUID,
-			Owner:   f.Owner,
-			IsDir:   f.IsDir,
-			Private: f.Private,
-			Parent:  f.ParentID,
-		}
+		dtos[i] = *types.FromFile(f)
 	}
 
 	return dtos, nil
