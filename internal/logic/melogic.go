@@ -7,8 +7,6 @@ import (
 	"disko/internal/types"
 	"disko/model"
 	"fmt"
-	"github.com/spf13/cast"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -28,7 +26,7 @@ func NewMeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MeLogic {
 
 func (l *MeLogic) Me() (resp *types.UserDTO, err error) {
 	var user *model.User
-	id := cast.ToUint(l.ctx.Value("id"))
+	id := GetUserId(l.ctx)
 	user, err = l.svcCtx.UserDAO.FindById(id)
 	fmt.Printf("id = %d, me: %+v", id, user)
 	if user != nil {

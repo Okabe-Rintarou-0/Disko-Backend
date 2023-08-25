@@ -115,12 +115,23 @@ type GetSharedFileResponse {
 	Data *ShareDTO `json:"data"`
 }
 
+type DeleteSharedFileResponse {
+	BaseResponse
+}
+
+type DeleteSharedFileRequest {
+	UUID string `path:"uuid"`
+}
+
 type ShareDTO {
-	ID       uint    `json:"id"`
-	UUID     string  `json:"uuid"`
-	ExpireAt *int64  `json:"expireAt"`
-	File     FileDTO `json:"file"`
-	Username string  `json:"username"`
+	ID        uint    `json:"id"`
+	UUID      string  `json:"uuid"`
+	ExpireAt  *int64  `json:"expireAt"`
+	CreatedAt int64   `json:"createdAt"`
+	UpdatedAt int64   `json:"updatedAt"`
+	File      FileDTO `json:"file"`
+	Username  string  `json:"username"`
+	Password  *string `json:"password"`
 }
 
 type UpdateFileRequest {
@@ -228,11 +239,17 @@ service disko-api {
 	@handler GetSharedFileHandler
 	get /api/files/shared/:uuid (GetSharedFileRequest) returns (ShareDTO)
 
+	@handler DeleteSharedFileHandler
+	delete /api/files/shared/:uuid (DeleteSharedFileRequest) returns (DeleteSharedFileResponse)
+
+	@handler GetMySharedFilesHandler
+	get /api/files/shared/mine returns ([]*ShareDTO)
+
 	@handler SaveSharedFileHandler
 	post /api/files/shared/save/:uuid (SaveSharedFileRequest) returns (SaveSharedFileResponse)
 
 	@handler GetMyFilesHandler
-	get /api/files/mine (GetMyFileRequest) returns ([]FileDTO)
+	get /api/files/mine (GetMyFileRequest) returns ([]*FileDTO)
 }
 
 @server(

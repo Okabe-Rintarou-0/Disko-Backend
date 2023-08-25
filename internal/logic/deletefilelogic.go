@@ -6,8 +6,6 @@ import (
 	"disko/internal/svc"
 	"disko/internal/types"
 	"disko/model"
-	"github.com/spf13/cast"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -31,7 +29,7 @@ func (l *DeleteFileLogic) DeleteFile(req *types.DeleteFileRequest) (resp *types.
 		owner uint
 	)
 
-	owner = cast.ToUint(l.ctx.Value("id"))
+	owner = GetUserId(l.ctx)
 	file, err = l.svcCtx.FileDAO.FindByUUID(req.UUID)
 	if err != nil && !dao.IsErrRecordNotFound(err) {
 		return nil, err

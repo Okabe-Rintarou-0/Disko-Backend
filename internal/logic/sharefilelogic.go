@@ -6,7 +6,6 @@ import (
 	"disko/dao"
 	"disko/model"
 	"github.com/google/uuid"
-	"github.com/spf13/cast"
 	"regexp"
 	"time"
 
@@ -38,7 +37,7 @@ func (l *ShareFileLogic) ShareFile(req *types.ShareFileRequest) (resp *types.Sha
 		owner uint
 	)
 
-	owner = cast.ToUint(l.ctx.Value("id"))
+	owner = GetUserId(l.ctx)
 
 	file, err = l.svcCtx.FileDAO.FindById(req.ID)
 	if err != nil && !dao.IsErrRecordNotFound(err) {

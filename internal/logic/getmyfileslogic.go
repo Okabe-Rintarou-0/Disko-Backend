@@ -6,8 +6,6 @@ import (
 	"disko/internal/svc"
 	"disko/internal/types"
 	"disko/model"
-	"github.com/spf13/cast"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -25,21 +23,21 @@ func NewGetMyFilesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetMyF
 	}
 }
 
-func (l *GetMyFilesLogic) GetMyFiles(req *types.GetMyFileRequest) (resp []types.FileDTO, err error) {
+func (l *GetMyFilesLogic) GetMyFiles(req *types.GetMyFileRequest) (resp []*types.FileDTO, err error) {
 	var (
 		files []*model.File
-		dtos  []types.FileDTO
+		dtos  []*types.FileDTO
 	)
-	ownerId := cast.ToUint(l.ctx.Value("id"))
+	ownerId := GetUserId(l.ctx)
 	files, err = l.svcCtx.FileDAO.Search(&ownerId, req.Parent, req.Keyword, req.Extensions)
 
 	if err != nil && !dao.IsErrRecordNotFound(err) {
 		return nil, err
 	}
 
-	dtos = make([]types.FileDTO, len(files))
+	dtos = make([]*types.FileDTO, len(files))
 	for i, f := range files {
-		dtos[i] = *types.FromFile(f)
+		dtos[i] = types.FromFile(f)
 	}
 
 	return dtos, nil

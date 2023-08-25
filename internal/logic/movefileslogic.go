@@ -7,8 +7,6 @@ import (
 	"disko/internal/svc"
 	"disko/internal/types"
 	"disko/model"
-	"github.com/spf13/cast"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -41,7 +39,7 @@ func (l *MoveFilesLogic) MoveFile(id, parentID uint) (resp *types.MoveFilesRespo
 		}, nil
 	}
 
-	owner = cast.ToUint(l.ctx.Value("id"))
+	owner = GetUserId(l.ctx)
 
 	file, err = l.svcCtx.FileDAO.FindById(id)
 	if err != nil && !dao.IsErrRecordNotFound(err) {

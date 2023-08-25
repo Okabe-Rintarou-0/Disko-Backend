@@ -5,7 +5,6 @@ import (
 	"disko/dao"
 	"disko/internal/svc"
 	"disko/internal/types"
-	"github.com/spf13/cast"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -37,7 +36,7 @@ func (l *FileDownloadLogic) FileDownload(req *types.FileDownloadRequest, w http.
 		return nil
 	}
 
-	owner := cast.ToUint(l.ctx.Value("id"))
+	owner := GetUserId(l.ctx)
 	if fileMeta.Owner != owner && fileMeta.Private {
 		w.WriteHeader(http.StatusUnauthorized)
 		return nil

@@ -5,7 +5,6 @@ import (
 	"disko/constants"
 	"disko/dao"
 	"disko/model"
-	"github.com/spf13/cast"
 	"path"
 
 	"disko/internal/svc"
@@ -48,7 +47,7 @@ func (l *UpdateFileLogic) UpdateFile(req *types.UpdateFileRequest) (resp *types.
 		}, nil
 	}
 
-	owner := cast.ToUint(l.ctx.Value("id"))
+	owner := GetUserId(l.ctx)
 	if file.Owner != owner {
 		return &types.UpdateFileResponse{
 			BaseResponse: types.BaseResponse{

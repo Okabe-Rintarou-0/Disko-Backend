@@ -46,7 +46,7 @@ func (l *FileUploadLogic) FileUpload(r *http.Request, req *types.FileUploadReque
 		quota    int64
 		usage    int64
 	)
-	owner := cast.ToUint(l.ctx.Value("id"))
+	owner := GetUserId(l.ctx)
 	// convert to bytes
 	// 1 GB = (1 << 30) B
 	maxFileSize := cast.ToInt64(l.svcCtx.Config.FileStorage.MaxFileSize * bytesPerGB)

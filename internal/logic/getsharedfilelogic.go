@@ -55,13 +55,7 @@ func (l *GetSharedFileLogic) GetSharedFile(req *types.GetSharedFileRequest) (res
 		}, nil
 	}
 
-	var expireAt *int64
-	if share.ExpireAt.Valid {
-		tm := share.ExpireAt.Time.UnixMilli()
-		expireAt = &tm
-	}
-
-	if expireAt != nil && *expireAt >= time.Now().UnixMilli() {
+	if share.ExpireAt.Valid && share.ExpireAt.Time.Before(time.Now()) {
 		return &types.GetSharedFileResponse{
 			BaseResponse: types.BaseResponse{
 				Message: "指定的分享文件已过期！",
@@ -70,17 +64,12 @@ func (l *GetSharedFileLogic) GetSharedFile(req *types.GetSharedFileRequest) (res
 			Data: nil,
 		}, nil
 	}
+
 	return &types.GetSharedFileResponse{
 		BaseResponse: types.BaseResponse{
 			Message: "成功！",
 			Ok:      true,
 		},
-		Data: &types.ShareDTO{
-			ID:       share.ID,
-			UUID:     share.UUID,
-			ExpireAt: expireAt,
-			File:     *types.FromFile(&share.File),
-			Username: share.User.Name,
-		},
+		Data: types.FromShare(share, false),
 	}, nil
 }

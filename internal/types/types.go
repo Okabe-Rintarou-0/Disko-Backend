@@ -116,12 +116,23 @@ type GetSharedFileResponse struct {
 	Data *ShareDTO `json:"data"`
 }
 
+type DeleteSharedFileResponse struct {
+	BaseResponse
+}
+
+type DeleteSharedFileRequest struct {
+	UUID string `path:"uuid"`
+}
+
 type ShareDTO struct {
-	ID       uint    `json:"id"`
-	UUID     string  `json:"uuid"`
-	ExpireAt *int64  `json:"expireAt"`
-	File     FileDTO `json:"file"`
-	Username string  `json:"username"`
+	ID        uint    `json:"id"`
+	UUID      string  `json:"uuid"`
+	ExpireAt  *int64  `json:"expireAt"`
+	CreatedAt int64   `json:"createdAt"`
+	UpdatedAt int64   `json:"updatedAt"`
+	File      FileDTO `json:"file"`
+	Username  string  `json:"username"`
+	Password  *string `json:"password"`
 }
 
 type UpdateFileRequest struct {

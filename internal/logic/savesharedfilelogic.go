@@ -5,7 +5,6 @@ import (
 	"disko/dao"
 	"disko/model"
 	"github.com/google/uuid"
-	"github.com/spf13/cast"
 	"path"
 	"time"
 
@@ -73,7 +72,7 @@ func (l *SaveSharedFileLogic) SaveSharedFile(req *types.SaveSharedFileRequest) (
 		}, nil
 	}
 
-	owner = cast.ToUint(l.ctx.Value("id"))
+	owner = GetUserId(l.ctx)
 
 	if len(req.Name) > 0 {
 		ext = path.Ext(req.Name)

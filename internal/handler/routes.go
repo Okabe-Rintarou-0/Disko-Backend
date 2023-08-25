@@ -91,6 +91,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: GetSharedFileHandler(serverCtx),
 				},
 				{
+					Method:  http.MethodDelete,
+					Path:    "/api/files/shared/:uuid",
+					Handler: DeleteSharedFileHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/api/files/shared/mine",
+					Handler: GetMySharedFilesHandler(serverCtx),
+				},
+				{
 					Method:  http.MethodPost,
 					Path:    "/api/files/shared/save/:uuid",
 					Handler: SaveSharedFileHandler(serverCtx),

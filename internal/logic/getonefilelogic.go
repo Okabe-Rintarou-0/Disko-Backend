@@ -7,8 +7,6 @@ import (
 	"disko/internal/types"
 	"disko/model"
 	"fmt"
-	"github.com/spf13/cast"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -31,7 +29,7 @@ func (l *GetOneFileLogic) GetOneFile(req *types.GetOneFileRequest) (resp *types.
 		owner uint
 		file  *model.File
 	)
-	owner = cast.ToUint(l.ctx.Value("id"))
+	owner = GetUserId(l.ctx)
 	file, err = l.svcCtx.FileDAO.FindById(req.ID)
 
 	if err != nil && !dao.IsErrRecordNotFound(err) {

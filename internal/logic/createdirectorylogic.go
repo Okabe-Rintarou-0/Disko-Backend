@@ -5,7 +5,6 @@ import (
 	"disko/dao"
 	"disko/model"
 	"github.com/google/uuid"
-	"github.com/spf13/cast"
 	"path"
 
 	"disko/internal/svc"
@@ -43,7 +42,7 @@ func (l *CreateDirectoryLogic) CreateDirectory(req *types.CreateDirectoryRequest
 		}, nil
 	}
 
-	owner := cast.ToUint(l.ctx.Value("id"))
+	owner := GetUserId(l.ctx)
 
 	// step 1 check whether parent exists
 	if req.Parent != nil {
