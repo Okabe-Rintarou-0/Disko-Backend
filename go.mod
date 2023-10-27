@@ -6,7 +6,7 @@ require (
 	github.com/adjust/rmq/v5 v5.2.0
 	github.com/dlclark/regexp2 v1.10.0
 	github.com/golang-jwt/jwt/v4 v4.5.0
-	github.com/google/uuid v1.3.0
+	github.com/google/uuid v1.4.0
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/spf13/cast v1.5.1
 	github.com/zeromicro/go-zero v1.5.4
